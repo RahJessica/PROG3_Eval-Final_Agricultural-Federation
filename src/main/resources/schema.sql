@@ -1,3 +1,15 @@
+CREATE DATABASE federation_db;
+
+CREATE USER federation_user WITH PASSWORD '123456';
+
+GRANT CONNECT ON DATABASE federation_db TO federation_user;
+
+GRANT USAGE ON SCHEMA public TO federation_user;
+
+alter database federation_db owner TO federation_user;
+
+grant usage, select on all sequences in schema public to federation_user;
+
 CREATE TABLE federation (
                             id_federation SERIAL PRIMARY KEY,
                             nom_federation VARCHAR(50)
