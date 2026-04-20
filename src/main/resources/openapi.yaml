@@ -9,10 +9,6 @@ servers:
 
 paths:
 
-  # ========================
-  # A - DEMANDES COLLECTIVITE
-  # ========================
-
   /collectivites/demandes:
     post:
       summary: Créer une demande d’ouverture de collectivité
@@ -50,10 +46,6 @@ paths:
         '200': { description: Statut mis à jour }
         '404': { description: Demande non trouvée }
 
-  # ========================
-  # COLLECTIVITES
-  # ========================
-
   /collectivites:
     get:
       summary: Lister les collectivités
@@ -76,10 +68,6 @@ paths:
       responses:
         '201': { description: Créée }
         '403': { description: Demande non validée }
-
-  # ========================
-  # B - ADMISSION MEMBRE
-  # ========================
 
   /collectivites/{id}/admissions:
     post:
@@ -130,10 +118,6 @@ paths:
         '403': {description: Paiement non effectué}
         '404': {description: Demande non trouvée}
 
-  # ========================
-  # MEMBRES
-  # ========================
-
   /membres:
     get:
       summary: Liste des membres
@@ -161,12 +145,18 @@ paths:
           name: id
           required: true
           schema: { type: integer }
+        - in: query
+          name: dateDebut
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: dateFin
+          schema:
+            type: string
+            format: date
       responses:
         '200': { description: Taux calculé }
-
-  # ========================
-  # C - COTISATIONS
-  # ========================
 
   /collectivites/{id}/cotisations:
     post:
@@ -198,10 +188,6 @@ paths:
       responses:
         '201': { description: Paiement enregistré }
 
-  # ========================
-  # D - COMPTES
-  # ========================
-
   /collectivites/{id}/comptes:
     post:
       summary: Créer un compte
@@ -232,10 +218,6 @@ paths:
           schema: { type: integer }
       responses:
         '200': { description: Solde retourné }
-
-  # ========================
-  # E - ACTIVITES
-  # ========================
 
   /collectivites/{id}/activites:
     post:
@@ -271,10 +253,6 @@ paths:
             schema: { $ref: '#/components/schemas/Presence' }
       responses:
         '201': { description: Présence enregistrée }
-
-  # ========================
-  # G - STATISTIQUES
-  # ========================
 
   /collectivites/{id}/statistiques:
     get:
