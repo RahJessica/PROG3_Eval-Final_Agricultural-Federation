@@ -1,0 +1,255 @@
+openapi: 3.0.0
+info:
+  title: Federation Agricole API - Management
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+
+paths:
+  /membres:
+    post:
+      summary: Creer un membre
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMembreDTO'
+      responses:
+        201:
+          description: Membre cree
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MembreDTO'
+        400:
+          description: Donnees invalides
+        404:
+          description: Collectivite introuvable
+
+    get:
+      summary: Recuperer la liste des membres
+      responses:
+        200:
+          description: OK
+        404:
+          description: Membre introuvable
+
+  /membres/{id}:
+    get:
+      summary: Récupérer un membre par son ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: Membre non-trouvé
+
+    delete:
+      summary: Supprimer un membre
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        204:
+          description: Membre supprimé
+        404:
+          description: Membre non trouvé
+
+  /cotisations:
+    post:
+      summary: Enregistrer une cotisation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCotisationDTO'
+      responses:
+        201:
+          description: Cotisation enregistree
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CotisationDTO'
+        400:
+          description: Donnees invalides
+        404:
+          description: Membre ou collectivite introuvable
+
+    get:
+      summary: Lister toutes les cotisations
+      responses:
+        200:
+          description: Liste des cotisations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CotisationDTO'
+
+  /collectivites:
+    post:
+      summary: Creer une collectivite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCollectiviteDTO'
+      responses:
+        201:
+          description: Collectivite creee
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectiviteDTO'
+        400:
+          description: Conditions non respectees
+        409:
+          description: Nom ou numero deja existant
+
+    get:
+      summary: Recuperer la liste de toutes les collectivites
+      responses:
+        200:
+          description: Liste des collectivites
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectiviteDTO'
+
+    /collectivites/{id}:
+      get:
+        summary: Recuperer une collectivite par son ID
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          200:
+            description: Collectivite trouvee
+            content:
+              application/json:
+                schema:
+                  $ref: '#/components/schemas/CollectiviteDTO'
+          404:
+            description: Collectivite non trouvee
+
+      delete:
+        summary: Supprimer une collectivite
+        parameters:
+          - name: id
+            in: path
+            required: true
+            schema:
+              type: integer
+        responses:
+          204:
+            description: Collectivite supprime avec succes
+          404:
+            description: Collectivite non trouvee
+          409:
+            description: Impossible de supprimer la collectivite
+
+components:
+  schemas:
+
+# DTO
+
+    CreateMembreDTO:
+      type: object
+      required:
+        - nom
+        - prenom
+        - email
+        - id_collectivite
+      properties:
+        nom:
+          type: string
+        prenom:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        id_collectivite:
+          type: integer
+
+    MembreDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom:
+          type: string
+        prenom:
+          type: string
+        email:
+          type: string
+        telephone:
+          type: string
+        date_adhesion:
+          type: string
+          format: date
+
+    CreateCotisationDTO:
+      type: object
+      properties:
+        montant:
+          type: number
+        type_cotisation:
+          type: string
+        mode_paiement:
+          type: string
+        id_membre:
+          type: integer
+        id_collectivite:
+          type: integer
+
+    CotisationDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        montant:
+          type: number
+        date_paiement:
+          type: string
+          format: date
+
+    CreateCollectiviteDTO:
+      type: object
+      properties:
+        nom_collectivite:
+          type: string
+        ville:
+          type: string
+        specialite:
+          type: string
+        id_federation:
+          type: integer
+
+    CollectiviteDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        nom_collectivite:
+          type: string
+        ville:
+          type: string
+        specialite:
+          type: string
