@@ -79,11 +79,11 @@ paths:
       responses:
         '201': { description: Demande d'admission créée }
         '400': {description: Données invalides}
-        '422': {description: Parrain invalide ou ancienneté insuffisante}
+        '422': {description: Conditions non respectées}
 
   /admissions/{id}/paiement:
     post:
-      summary: Payer les frais d’adhésion
+      summary: Payer les frais d’adhésion et cotisations annuelles
       parameters:
         - in: path
           name: id
@@ -94,10 +94,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Paiement'
+              $ref: '#/components/schemas/PaiementAdmission'
       responses:
         '200': { description: Paiement effectué }
-        '400': {description: Montant incorrect}
+        '400':
+          description: |
+            Montant incorrect (doit inclure :
+            - 50 000 MGA frais d’adhésion
+            - + cotisation annuelle de la collectivité)
 
   /admissions/{id}/valider:
     post:
@@ -110,7 +114,7 @@ paths:
             type: integer
       responses:
         '201': {description: Membre officiellement admis}
-        '403': {description: Paiement non effectué}
+        '403': {description: Paiement incomplet ou conditions de parrainage non respectées}
         '404': {description: Demande non trouvée}
 
   /membres:
