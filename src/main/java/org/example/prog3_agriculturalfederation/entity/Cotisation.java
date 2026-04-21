@@ -1,5 +1,8 @@
 package org.example.prog3_agriculturalfederation.entity;
 
+import org.example.prog3_agriculturalfederation.entity.enums.ModePaiement;
+import org.example.prog3_agriculturalfederation.entity.enums.TypeCotisation;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
