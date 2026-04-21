@@ -129,6 +129,25 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Membre'
+    post:
+      summary: Créer un membre (après validation d’admission)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Membre'
+      responses:
+        '201':
+          description: Membre créé
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Membre'
+        '400':
+          description: Données invalides
+        '409':
+          description: Membre déjà existant
 
   /membres/{id}:
     get:
@@ -162,6 +181,39 @@ paths:
             format: date
       responses:
         '200': { description: Taux calculé }
+
+  /membres/{id}/changer-collectivite:
+    post:
+      summary: Changer la collectivité d’un membre
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChangementCollectivite'
+      responses:
+        '200': { description: Collectivité changée }
+
+  /membres/{id}/demission:
+    post:
+      summary: Démission d’un membre
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer }
+      responses:
+        '200': { description: Membre démissionnaire }
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Demission'
 
   /collectivites/{id}/cotisations:
     post:
@@ -523,3 +575,18 @@ components:
 
         montantImpaye:
           type: number
+
+    ChangementCollectivite:
+      type: object
+      properties:
+        nouvelleCollectiviteId:
+          type: integer
+
+    Demission:
+      type: object
+      properties:
+        motif:
+          type: string
+        date:
+          type: string
+          format: date
