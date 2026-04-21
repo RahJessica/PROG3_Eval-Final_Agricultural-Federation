@@ -23,7 +23,8 @@ paths:
         '422': { description: Conditions non respectées }
 
   /collectivites/demandes/{id}:
-    patch:
+    # modifier partiellement le statut de la demande
+    patch: 
       summary: Valider ou refuser une demande
       parameters:
         - in: path
@@ -299,7 +300,35 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Statistiques'
+                $ref: '#/components/schemas/StatistiqueCollectivite'
+                
+  /federation/statistiques:
+    # Date début et date fin personnalisable selon : rapport Mensuel ou Annuel
+    get:
+      summary: Statistiques globales de toutes les collectivités dans la fédération
+      description: Retourne un rapport mensuel ou annuel de chaque collectivité
+      parameters:
+        - in: query
+          name: dateDebut
+          required: true
+          schema:
+            type: string
+            format: date
+
+        - in: query
+          name: dateFin
+          required: true
+          schema:
+            type: string
+            format: date
+
+      responses:
+        '200':
+          description: Rapport global de la fédération
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatistiquesFederation'
 
 components:
 
@@ -450,20 +479,30 @@ components:
           enum: [mobile money, virement bancaire, espece]
 
 
-    Statistiques:
+    StatistiqueCollectivite:
       type: object
       properties:
-        nombreMembres:
+        collectiviteId:
           type: integer
 
         tauxAssiduiteGlobal:
           type: number
           format: float
 
-        membres:
+        pourcentageCotisationAJour:
+          type: number
+          format: float
+
+        nouveauxAdherents:
+          type: integer
+
+    StatistiquesFederation:
+      type: object
+      properties:
+        collectivites:
           type: array
           items:
-            $ref: '#/components/schemas/StatistiqueMembre'
+            $ref: '#/components/schemas/StatistiqueCollectivite'
 
     StatistiqueMembre:
       type: object
