@@ -172,6 +172,44 @@ paths:
             schema: { $ref: '#/components/schemas/Cotisation' }
       responses:
         '201': { description: Cotisation créée }
+        
+    get:
+      summary: Recuperer la liste des cotisations
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Liste des paiements
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Cotisation'
+
+  /collectivites/{id}/versements:
+    post:
+      summary: Verser une part des cotisations à la fédération
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                montant: { type: number }
+                periode: { type: string }
+      responses:
+        '201': { description: Versement effectué }
 
   /collectivites/{id}/comptes:
     post:
@@ -192,6 +230,13 @@ paths:
       summary: Liste des comptes
       responses:
         '200': { description: OK }
+      requestBody:
+        content: 
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Compte'
 
   /comptes/{id}/solde:
     get:
