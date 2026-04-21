@@ -35,13 +35,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                statut:
-                  type: string
-                  enum:
-                    - APPROUVEE
-                    - REFUSEE
+              $ref: '#/components/schemas/StatutDemande'
       responses:
         '200': { description: Statut mis à jour }
         '404': { description: Demande non trouvée }
@@ -71,7 +65,7 @@ paths:
 
   /collectivites/{id}/admissions:
     post:
-      summary: Créer une demande d'admission
+      summary: Créer une demande d'admission par un membre
       parameters:
         - in: path
           name: id
@@ -124,6 +118,12 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Membre'
 
   /membres/{id}:
     get:
@@ -160,7 +160,7 @@ paths:
 
   /collectivites/{id}/cotisations:
     post:
-      summary: Créer une cotisation
+      summary: Créer une cotisation (payer)
       parameters:
         - in: path
           name: id
@@ -171,22 +171,7 @@ paths:
           application/json:
             schema: { $ref: '#/components/schemas/Cotisation' }
       responses:
-        '201': { description: Créée }
-
-  /cotisations/{id}/paiements:
-    post:
-      summary: Enregistrer un paiement
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Paiement' }
-      responses:
-        '201': { description: Paiement enregistré }
+        '201': { description: Cotisation créée }
 
   /collectivites/{id}/comptes:
     post:
@@ -261,13 +246,68 @@ paths:
         - in: path
           name: id
           required: true
-          schema: { type: integer }
+          schema:
+            type: integer
       responses:
-        '200': { description: Statistiques retournées }
+        '200':
+          description: Statistiques retournées
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Statistiques'
 
 components:
 
   schemas:
+
+    Membre:
+      type: object
+      properties:
+        id:
+          type: integer
+
+        nom:
+          type: string
+
+        prenom:
+          type: string
+
+        dateNaissance:
+          type: string
+          format: date
+
+        genre:
+          type: string
+          enum: [ MASCULIN, FEMININ ]
+
+        adresse:
+          type: string
+
+        metier:
+          type: string
+
+        telephone:
+          type: string
+
+        email:
+          type: string
+          format: email
+
+        dateAdhesion:
+          type: string
+          format: date
+
+        collectiviteId:
+          type: integer
+
+    StatutDemande:
+      type: object
+      properties:
+        statut:
+          type: string
+          enum: [ APPROUVEE, REFUSEE ]
+      required:
+        - statut
 
     DemandeCollectivite:
       type: object
@@ -320,6 +360,7 @@ components:
       properties:
         titre: { type: string }
         date: { type: string, format: date }
+        description : {type: string}
         obligatoire: { type: boolean }
 
     Presence:
@@ -329,6 +370,9 @@ components:
         statut:
           type: string
           enum: [PRESENT, ABSENT, EXCUSE]
+        motif:
+          type: string
+          nullable: true
 
     DemandeAdmission:
       type: object
@@ -338,3 +382,34 @@ components:
         email: { type: string }
         telephone: { type: string }
         parrainId: { type: integer }
+
+    Statistiques:
+      type: object
+      properties:
+        nombreMembres:
+          type: integer
+
+        tauxAssiduiteGlobal:
+          type: number
+          format: float
+
+        membres:
+          type: array
+          items:
+            $ref: '#/components/schemas/StatistiqueMembre'
+
+    StatistiqueMembre:
+      type: object
+      properties:
+        membreId:
+          type: integer
+
+        tauxAssiduite:
+          type: number
+          format: float
+
+        montantPaye:
+          type: number
+
+        montantImpaye:
+          type: number
