@@ -426,7 +426,29 @@ components:
         prenom: { type: string }
         email: { type: string }
         telephone: { type: string }
-        parrainId: { type: integer }
+        parrainId:
+          type: array
+          minItems: 2
+          items:
+            type: object
+            properties:
+              membreId: {type: integer}
+              relation:
+                type: string
+                description: famille, ami, collègue, etc
+
+    PaiementAdmission:
+      type: object
+      properties:
+        fraisAdhesion: {type: number}
+        cotisationAnnuelle: { types: number }
+        montantTotal:
+          type: number
+          description: Somme des deux montants
+        mode:
+          type: string
+          enum: [mobile money, virement bancaire, espece]
+
 
     Statistiques:
       type: object
