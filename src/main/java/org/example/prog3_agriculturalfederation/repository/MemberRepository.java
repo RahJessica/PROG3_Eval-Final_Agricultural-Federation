@@ -3,15 +3,12 @@ package org.example.prog3_agriculturalfederation.repository;
 import org.example.prog3_agriculturalfederation.config.DatabaseConnection;
 import org.example.prog3_agriculturalfederation.dto.CreateMemberDTO;
 import org.example.prog3_agriculturalfederation.entity.Member;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class MemberRepository {
-
 
     public boolean collectiviteExists(int id) {
         String sql = "SELECT COUNT(*) FROM collectivite WHERE id_collectivite = ?";
@@ -48,14 +45,10 @@ public class MemberRepository {
 
             ps.setString(1, dto.phoneNumber);
             ps.setString(2, dto.email);
-
-            ps.setDate(3, dto.dateAdhesion!= null ? Date.valueOf(dto.dateAdhesion) : null);
-
+            ps.setDate(3, dto.dateAdhesion != null ? Date.valueOf(dto.dateAdhesion) : null);
             ps.setString(4, dto.lastName);
             ps.setString(5, dto.firstName);
-
             ps.setDate(6, dto.birthDate != null ? Date.valueOf(dto.birthDate) : null);
-
             ps.setString(7, dto.gender);
             ps.setString(8, dto.address);
             ps.setString(9, dto.profession);
@@ -66,7 +59,10 @@ public class MemberRepository {
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 Member m = new Member();
-                m.setId(rs.getString(1));
+                m.setId(rs.getInt(1));
+                m.setFirstName(dto.firstName);
+                m.setLastName(dto.lastName);
+                m.setEmail(dto.email);
                 return m;
             }
 
@@ -76,6 +72,4 @@ public class MemberRepository {
 
         return null;
     }
-
-    }
-
+}
