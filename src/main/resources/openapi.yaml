@@ -313,8 +313,7 @@ paths:
       summary: Liste des comptes
       responses:
         '200': { description: OK }
-      requestBody:
-        content: 
+        content:
           application/json:
             schema:
               type: array
@@ -552,7 +551,7 @@ components:
       type: object
       properties:
         fraisAdhesion: {type: number}
-        cotisationAnnuelle: { types: number }
+        cotisationAnnuelle: { type: number }
         montantTotal:
           type: number
           description: Somme des deux montants
