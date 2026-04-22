@@ -3,19 +3,11 @@ package org.example.prog3_agriculturalfederation.dto;
 import java.util.List;
 
 public class CreateCollectivityDTO {
-    private Integer id;
     private String location;
     private Boolean federationApproval;
     private CreateCollectivityStructureDTO structure;
     private List<String> members;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getLocation() {
         return location;

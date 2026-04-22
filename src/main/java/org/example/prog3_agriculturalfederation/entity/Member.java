@@ -3,7 +3,7 @@ package org.example.prog3_agriculturalfederation.entity;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Membre {
+public class Member {
     private Integer idMembre;
     private String nom;
     private String prenom;
@@ -16,7 +16,7 @@ public class Membre {
     private String metier;
     private Integer idCollectivite;
 
-    public Membre(Integer idMembre, String nom, String prenom, LocalDate dateNaissance, String genre, String telephone, String email, LocalDate dateAdhesion, String adresse, String metier, Integer idCollectivite) {
+    public Member(Integer idMembre, String nom, String prenom, LocalDate dateNaissance, String genre, String telephone, String email, LocalDate dateAdhesion, String adresse, String metier, Integer idCollectivite) {
         this.idMembre = idMembre;
         this.nom = nom;
         this.prenom = prenom;
@@ -121,8 +121,8 @@ public class Membre {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Membre membre = (Membre) o;
-        return Objects.equals(idMembre, membre.idMembre) && Objects.equals(nom, membre.nom) && Objects.equals(prenom, membre.prenom) && Objects.equals(dateNaissance, membre.dateNaissance) && Objects.equals(genre, membre.genre) && Objects.equals(telephone, membre.telephone) && Objects.equals(email, membre.email) && Objects.equals(dateAdhesion, membre.dateAdhesion) && Objects.equals(adresse, membre.adresse) && Objects.equals(metier, membre.metier) && Objects.equals(idCollectivite, membre.idCollectivite);
+        Member member = (Member) o;
+        return Objects.equals(idMembre, member.idMembre) && Objects.equals(nom, member.nom) && Objects.equals(prenom, member.prenom) && Objects.equals(dateNaissance, member.dateNaissance) && Objects.equals(genre, member.genre) && Objects.equals(telephone, member.telephone) && Objects.equals(email, member.email) && Objects.equals(dateAdhesion, member.dateAdhesion) && Objects.equals(adresse, member.adresse) && Objects.equals(metier, member.metier) && Objects.equals(idCollectivite, member.idCollectivite);
     }
 
     @Override
