@@ -6,7 +6,7 @@ import org.example.prog3_agriculturalfederation.entity.enums.MemberOccupation;
 import java.time.LocalDate;
 import java.util.Date;
 
-public class MemberInformation {
+public class Member {
     private String lastName;
     private String firstName;
     private Date birthDate ;
@@ -98,7 +98,7 @@ public class MemberInformation {
         this.profession = profession;
     }
 
-    public MemberInformation(String address, Date birthDate, LocalDate dateAdhesion, String email, String firstName, Gender gender, String lastName, MemberOccupation occupation, String phoneNumber, String profession) {
+    public Member(String address, Date birthDate, LocalDate dateAdhesion, String email, String firstName, Gender gender, String lastName, MemberOccupation occupation, String phoneNumber, String profession) {
         this.address = address;
         this.birthDate = birthDate;
         this.dateAdhesion = dateAdhesion;
