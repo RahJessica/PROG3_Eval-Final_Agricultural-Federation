@@ -7,10 +7,10 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Member {
-    private String id;
+    private Integer id;
     private String lastName;
     private String firstName;
-    private Date birthDate ;
+    private LocalDate birthDate ;
     private Gender gender;
     private String phoneNumber;
     private String email;
@@ -19,11 +19,16 @@ public class Member {
     private String profession;
     private MemberOccupation occupation;
 
-    public String getId() {
+
+    public Member() {
+
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -35,11 +40,11 @@ public class Member {
         this.address = address;
     }
 
-    public Date getBirthDate() {
+    public LocalDate getBirthDate() {
         return birthDate;
     }
 
-    public void setBirthDate(Date birthDate) {
+    public void setBirthDate(LocalDate birthDate) {
         this.birthDate = birthDate;
     }
 
@@ -107,7 +112,7 @@ public class Member {
         this.profession = profession;
     }
 
-    public Member(String id, String address, Date birthDate, LocalDate dateAdhesion, String email, String firstName, Gender gender, String lastName, MemberOccupation occupation, String phoneNumber, String profession) {
+    public Member(Integer id, String address, LocalDate birthDate, LocalDate dateAdhesion, String email, String firstName, Gender gender, String lastName, MemberOccupation occupation, String phoneNumber, String profession) {
         this.id = id;
         this.address = address;
         this.birthDate = birthDate;

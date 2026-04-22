@@ -13,8 +13,8 @@ public class CreateMemberDTO {
     public String phoneNumber;
     public String email;
     public String occupation;
-
-    public String collectivityIdentifier;
+    public Integer idCollectivity;
+    public LocalDate dateAdhesion;
     public List<String> referees;
 
     public boolean registrationFeePaid;
