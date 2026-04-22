@@ -1,3 +1,4 @@
+package org.example.prog3_agriculturalfederation.controller;
 import org.example.prog3_agriculturalfederation.dto.CollectivityDTO;
 import org.example.prog3_agriculturalfederation.dto.CreateCollectivityDTO;
 import org.example.prog3_agriculturalfederation.entity.Collectivity;
