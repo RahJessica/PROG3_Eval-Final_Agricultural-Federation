@@ -54,7 +54,7 @@ public class CollectivityService {
                 .collect(Collectors.toList());
     }
 
-    private void validateReferees(List<RefereeDTO> referees, List<String> memberIds) {
+    private void validateReferees(List<RefereeDTO> referees, List<Integer> memberIds) {
 
         if (referees == null || referees.size() < 2) {
             throw new RuntimeException("At least 2 referees required");

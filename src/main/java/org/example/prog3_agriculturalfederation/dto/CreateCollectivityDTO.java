@@ -6,7 +6,7 @@ public class CreateCollectivityDTO {
     private String town;
     private Boolean federationApproval;
     private CreateCollectivityStructureDTO structure;
-    private List<String> members;
+    private List<Integer> members; //reference des members
     private List<RefereeDTO> referees;
 
 
@@ -34,11 +34,11 @@ public class CreateCollectivityDTO {
         this.structure = structure;
     }
 
-    public List<String> getMembers() {
+    public List<Integer> getMembers() {
         return members;
     }
 
-    public void setMembers(List<String> members) {
+    public void setMembers(List<Integer> members) {
         this.members = members;
     }
 

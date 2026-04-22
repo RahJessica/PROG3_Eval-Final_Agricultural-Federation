@@ -3,7 +3,7 @@ package org.example.prog3_agriculturalfederation.dto;
 import java.time.LocalDate;
 
 public class MemberDTO {
-    private String id;
+    private Integer id;
     private String firstName;
     private String lastName;
     private LocalDate birthDate;
@@ -15,11 +15,11 @@ public class MemberDTO {
     private String occupation;
     private LocalDate dateAdhesion;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
