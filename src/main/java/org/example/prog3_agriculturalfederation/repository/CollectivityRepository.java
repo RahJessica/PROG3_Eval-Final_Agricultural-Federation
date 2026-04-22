@@ -17,12 +17,12 @@ public class CollectivityRepository {
     }
 
     public void saveAll(List<Collectivity> collectivities) {
-        String sql = "INSERT INTO collectivity (id, location) VALUES (?, ?)";
+        String sql = "INSERT INTO collectivite (id_collectivite, ville) VALUES (?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Collectivity c : collectivities) {
-                ps.setString(1, c.getIdCollectivity());
+                ps.setInt(1, c.getIdCollectivity());
                 ps.setString(2, c.getTown());
                 ps.addBatch();
             }
