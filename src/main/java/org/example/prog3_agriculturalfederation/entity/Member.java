@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.util.Date;
 
 public class Member {
+    private String id;
     private String lastName;
     private String firstName;
     private Date birthDate ;
@@ -17,6 +18,14 @@ public class Member {
     private String address;
     private String profession;
     private MemberOccupation occupation;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public String getAddress() {
         return address;
@@ -98,7 +107,8 @@ public class Member {
         this.profession = profession;
     }
 
-    public Member(String address, Date birthDate, LocalDate dateAdhesion, String email, String firstName, Gender gender, String lastName, MemberOccupation occupation, String phoneNumber, String profession) {
+    public Member(String id, String address, Date birthDate, LocalDate dateAdhesion, String email, String firstName, Gender gender, String lastName, MemberOccupation occupation, String phoneNumber, String profession) {
+        this.id = id;
         this.address = address;
         this.birthDate = birthDate;
         this.dateAdhesion = dateAdhesion;
