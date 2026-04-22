@@ -6,6 +6,8 @@ import org.example.prog3_agriculturalfederation.service.MemberService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/members")
 public class MemberController {
@@ -17,7 +19,7 @@ public class MemberController {
     }
 
     @PostMapping
-    public ResponseEntity<Member> create(@RequestBody CreateMemberDTO dto) {
-        return ResponseEntity.status(201).body(service.createMember(dto));
+    public ResponseEntity<List<Member>> create(@RequestBody List<CreateMemberDTO> dtos) {
+        return ResponseEntity.status(201).body(service.createMembers(dtos));
     }
 }

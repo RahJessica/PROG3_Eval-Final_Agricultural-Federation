@@ -5,6 +5,8 @@ import org.example.prog3_agriculturalfederation.entity.Member;
 import org.example.prog3_agriculturalfederation.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class MemberService {
 
@@ -14,16 +16,28 @@ public class MemberService {
         this.repository = repository;
     }
 
-    public Member createMember(CreateMemberDTO dto) {
+    public List<Member> createMembers(List<CreateMemberDTO> dtos) {
 
-        if (dto.lastName == null || dto.firstName == null) {
-            throw new RuntimeException("Nom et prénom obligatoires");
+        if (dtos == null || dtos.isEmpty()) {
+            throw new RuntimeException("Liste vide");
         }
 
-        if (dto.idCollectivity == null || !repository.collectiviteExists(dto.idCollectivity)) {
-            throw new RuntimeException("Collectivité inexistante");
+        for (CreateMemberDTO dto : dtos) {
+
+            if (dto.firstName == null || dto.lastName == null) {
+                throw new RuntimeException("Nom et prénom obligatoires");
+            }
+
+            if (dto.idCollectivity == null || !repository.collectiviteExists(dto.idCollectivity)) {
+                throw new RuntimeException("Collectivité inexistante");
+            }
+
+            // 🔥 règles métier typiques examen
+            if (!dto.registrationFeePaid || !dto.membershipDuesPaid) {
+                throw new RuntimeException("Cotisation ou frais d'inscription non payés");
+            }
         }
 
-        return repository.save(dto);
+        return repository.saveAll(dtos);
     }
 }
