@@ -1,630 +1,216 @@
 openapi: 3.1.0
 info:
-  title: Federation Agricole API
-  version: 1.0.0
-  description: API de gestion des collectivités agricoles à Madagascar
-
+  title: Agricultural federation API
+  description: |
+    # Versioning
+    This API uses semantic versioning (MAJOR.MINOR.PATCH). Available versions are : 
+    - v0.0.1 (2026-04-21) : POST /collectivities for collectivities creation and POST /members for members creation.
+  version: 0.0.2
 servers:
-  - url: http://localhost:8080
-
+  - url: 'https://localhost:8080'
 paths:
-
-  /collectivites/demandes:
+  '/collectivities':
     post:
-      summary: Créer une demande d’ouverture de collectivité
+      summary: Create a collectivity with unique name constraint
+      description: |
+        Creates a new collectivity. The federation provides the base name,
+        but the system ensures uniqueness. If the provided name already exists,
+        the system will automatically generate a unique variant by appending a suffix.
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/DemandeCollectivite'
-      responses:
-        '201': { description: Demande créée }
-        '422': { description: Conditions non respectées }
-
-  /collectivites/demandes/{id}:
-    # modifier partiellement le statut de la demande
-    patch: 
-      summary: Valider ou refuser une demande
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/StatutDemande'
-      responses:
-        '200': { description: Statut mis à jour }
-        '404': { description: Demande non trouvée }
-
-  /collectivites:
-    get:
-      summary: Lister les collectivités
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items: { $ref: '#/components/schemas/Collectivite' }
-
-    post:
-      summary: Créer une collectivité après validation
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Collectivite' }
-      responses:
-        '201': { description: Créée }
-        '403': { description: Demande non validée }
-
-  /collectivites/{id}/admissions:
-    post:
-      summary: Créer une demande d'admission par un membre
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/DemandeAdmission' }
-      responses:
-        '201': { description: Demande d'admission créée }
-        '400': {description: Données invalides}
-        '422': {description: Conditions non respectées}
-
-  /admissions/{id}/paiement:
-    post:
-      summary: Payer les frais d’adhésion et cotisations annuelles
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PaiementAdmission'
-      responses:
-        '200': { description: Paiement effectué }
-        '400':
-          description: |
-            Montant incorrect (doit inclure :
-            - 50 000 MGA frais d’adhésion
-            - + cotisation annuelle de la collectivité)
-
-  /admissions/{id}/valider:
-    post:
-      summary: Valider l'admission d'un membre
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '201': {description: Membre officiellement admis}
-        '403': {description: Paiement incomplet ou conditions de parrainage non respectées}
-        '404': {description: Demande non trouvée}
-
-  /membres:
-    get:
-      summary: Liste des membres
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Membre'
-    post:
-      summary: Créer un membre (après validation d’admission)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Membre'
-      responses:
-        '201':
-          description: Membre créé
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Membre'
-        '400':
-          description: Données invalides
-        '409':
-          description: Membre déjà existant
-
-  /membres/{id}:
-    get:
-      summary: Obtenir un membre
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        '200': { description: OK }
-        '404': { description: Non trouvé }
-
-    patch:
-      summary: Mettre à jour les informations d’un membre
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UpdateMembre'
-      responses:
-        '200':
-          description: Membre mis à jour
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Membre'
-        '400':
-          description: Données invalides
-        '404':
-          description: Membre non trouvé
-
-  /membres/{id}/assiduite:
-    get:
-      summary: Calcul du taux d’assiduité
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-        - in: query
-          name: dateDebut
-          schema:
-            type: string
-            format: date
-        - in: query
-          name: dateFin
-          schema:
-            type: string
-            format: date
-      responses:
-        '200': { description: Taux calculé }
-
-  /membres/{id}/changer-collectivite:
-    post:
-      summary: Changer la collectivité d’un membre
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ChangementCollectivite'
-      responses:
-        '200': { description: Collectivité changée }
-
-  /membres/{id}/demission:
-    post:
-      summary: Démission d’un membre
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      responses:
-        '200': { description: Membre démissionnaire }
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Demission'
-
-  /collectivites/{id}/cotisations:
-    post:
-      summary: Créer une cotisation (payer)
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Cotisation' }
-      responses:
-        '201': { description: Cotisation créée }
-        
-    get:
-      summary: Recuperer la liste des cotisations
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Liste des paiements
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Cotisation'
-
-  /collectivites/{id}/versements:
-    post:
-      summary: Verser une part des cotisations à la fédération
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                montant: { type: number }
-                periode: { type: string }
-      responses:
-        '201': { description: Versement effectué }
-
-  /collectivites/{id}/comptes:
-    post:
-      summary: Créer un compte
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Compte' }
-      responses:
-        '201': { description: Compte créé }
-
-    get:
-      summary: Liste des comptes
-      responses:
-        '200': { description: OK }
         content:
           application/json:
             schema:
               type: array
               items:
-                $ref: '#/components/schemas/Compte'
-
-  /comptes/{id}/solde:
-    get:
-      summary: Consulter le solde
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
+                $ref: '#/components/schemas/CreateCollectivity'
       responses:
-        '200': { description: Solde retourné }
-
-  /collectivites/{id}/activites:
-    post:
-      summary: Créer une activité
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Activite' }
-      responses:
-        '201': { description: Activité créée }
-
-    get:
-      summary: Liste des activités
-      responses:
-        '200': { description: OK }
-
-  /activites/{id}/presences:
-    post:
-      summary: Enregistrer une présence
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema: { type: integer }
-      requestBody:
-        content:
-          application/json:
-            schema: { $ref: '#/components/schemas/Presence' }
-      responses:
-        '201': { description: Présence enregistrée }
-
-  /collectivites/{id}/statistiques:
-    get:
-      summary: Statistiques de la collectivité
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: integer
-      responses:
-        '200':
-          description: Statistiques retournées
+        201:
+          description: Collectivity successfully created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StatistiqueCollectivite'
-                
-  /federation/statistiques:
-    # Date début et date fin personnalisable selon : rapport Mensuel ou Annuel
-    get:
-      summary: Statistiques globales de toutes les collectivités dans la fédération
-      description: Retourne un rapport mensuel ou annuel de chaque collectivité
-      parameters:
-        - in: query
-          name: dateDebut
-          required: true
-          schema:
-            type: string
-            format: date
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collectivity'
+        409:
+          description: Conflict in name resolution
 
-        - in: query
-          name: dateFin
+
+  /collectivities/validate-name:
+    get:
+      summary: Validate and suggest a unique collectivity name
+      description: |
+          Checks whether a collectivity name is already in use.
+          If the name exists, the system suggests a unique alternative
+          by appending a numeric suffix.
+
+      parameters:
+        - name: nom
+          in: query
           required: true
           schema:
             type: string
-            format: date
+            description: Base name provided by the federation
 
       responses:
-        '200':
-          description: Rapport global de la fédération
+        200:
+          description: Name availability result
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StatistiquesFederation'
+                $ref: '#/components/schemas/CollectivityNameValidation'
 
+        400:
+          description: Invalid request (missing or empty name)
+
+  '/members':
+    post:
+      summary: Create list of members
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/CreateMember'
+      responses:
+        201:
+          description: List of created members
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Member'
+        400:
+          description: |
+            The following case must return a bad request exception : 
+            - Member with bad referees or without proper payment.
+            - Membership dues not paid or registration fee not paid.
+        404:
+          description: Either collectivity or member not found.
 components:
-
   schemas:
-
-    Membre:
+    CollectivityNameValidation:
+      type: object
+      properties:
+        available:
+          type: boolean
+          description: Indicates if the name is available as-is
+        suggestedName:
+          type: string
+          description: |
+            Suggested unique name if the base name already exists.
+    CreateCollectivity:
+      type: object
+      properties:
+        location:
+          type: string
+        members:
+          type: array
+          items:
+            schema:
+              $ref: '#/components/schemas/MemberIdentifier'
+        federationApproval:
+          type: boolean
+        structure:
+          $ref: '#/components/schemas/CreateCollectivityStructure'
+    CreateCollectivityStructure:
+      type: object
+      properties:
+        president:
+          $ref: '#/components/schemas/MemberIdentifier'
+        vicePresident:
+          $ref: '#/components/schemas/MemberIdentifier'
+        treasurer:
+          $ref: '#/components/schemas/MemberIdentifier'
+        secretary:
+          $ref: '#/components/schemas/MemberIdentifier'
+    CollectivityStructure:
+      type: object
+      properties:
+        president:
+          $ref: '#/components/schemas/Member'
+        vicePresident:
+          $ref: '#/components/schemas/Member'
+        treasurer:
+          $ref: '#/components/schemas/Member'
+        secretary:
+          $ref: '#/components/schemas/Member'
+    Collectivity:
       type: object
       properties:
         id:
-          type: integer
-
-        nom:
           type: string
-
-        prenom:
+        location:
           type: string
-
-        dateNaissance:
-          type: string
-          format: date
-
-        genre:
-          type: string
-          enum: [ MASCULIN, FEMININ ]
-
-        adresse:
-          type: string
-
-        metier:
-          type: string
-
-        telephone:
-          type: string
-
-        email:
-          type: string
-          format: email
-
-        dateAdhesion:
-          type: string
-          format: date
-
-        collectiviteId:
-          type: integer
-
-    StatutDemande:
-      type: object
-      properties:
-        statut:
-          type: string
-          enum: [ APPROUVEE, REFUSEE ]
-      required:
-        - statut
-
-    DemandeCollectivite:
-      type: object
-      properties:
-        nom: { type: string }
-        ville: { type: string }
-        specialite: { type: string }
-        membresIds:
-          type: array
-          minItems: 10
-          items: { type: integer }
-
-    Collectivite:
-      type: object
-      properties:
-        id: { type: integer }
-        nom: { type: string }
-        ville: { type: string }
-        specialite: { type: string }
-
-    Admission:
-      type: object
-      properties:
-        nom: { type: string }
-        prenom: { type: string }
-        email: { type: string }
-        parrainId: { type: integer }
-
-    Cotisation:
-      type: object
-      properties:
-        montant: { type: number }
-        type: { type: string }
-
-    Paiement:
-      type: object
-      properties:
-        montant: { type: number }
-        mode: { type: string }
-
-    Compte:
-      type: object
-      properties:
-        type:
-          type: string
-          enum: [CAISSE, BANCAIRE, MOBILE_MONEY]
-
-    Activite:
-      type: object
-      properties:
-        titre: { type: string }
-        date: { type: string, format: date }
-        description : {type: string}
-        obligatoire: { type: boolean }
-
-    Presence:
-      type: object
-      properties:
-        membreId: { type: integer }
-        statut:
-          type: string
-          enum: [PRESENT, ABSENT, EXCUSE]
-        motif:
-          type: string
-          nullable: true
-
-    DemandeAdmission:
-      type: object
-      properties:
-        nom: { type: string }
-        prenom: { type: string }
-        email: { type: string }
-        telephone: { type: string }
-        parrainId:
-          type: array
-          minItems: 2
-          items:
-            type: object
-            properties:
-              membreId: {type: integer}
-              relation:
-                type: string
-                description: famille, ami, collègue, etc
-
-    PaiementAdmission:
-      type: object
-      properties:
-        fraisAdhesion: {type: number}
-        cotisationAnnuelle: { type: number }
-        montantTotal:
-          type: number
-          description: Somme des deux montants
-        mode:
-          type: string
-          enum: [mobile money, virement bancaire, espece]
-
-
-    StatistiqueCollectivite:
-      type: object
-      properties:
-        collectiviteId:
-          type: integer
-
-        tauxAssiduiteGlobal:
-          type: number
-          format: float
-
-        pourcentageCotisationAJour:
-          type: number
-          format: float
-
-        nouveauxAdherents:
-          type: integer
-
-    StatistiquesFederation:
-      type: object
-      properties:
-        collectivites:
+        structure:
+          $ref: '#/components/schemas/CollectivityStructure'
+        members:
           type: array
           items:
-            $ref: '#/components/schemas/StatistiqueCollectivite'
-
-    StatistiqueMembre:
+            $ref: '#/components/schemas/Member'
+    MemberIdentifier:
+      type: string
+    CreateMember:
       type: object
+      allOf:
+        - $ref: '#/components/schemas/MemberInformation'
       properties:
-        membreId:
-          type: integer
-
-        tauxAssiduite:
-          type: number
-          format: float
-
-        montantPaye:
-          type: number
-
-        montantImpaye:
-          type: number
-
-    ChangementCollectivite:
-      type: object
-      properties:
-        nouvelleCollectiviteId:
-          type: integer
-
-    Demission:
-      type: object
-      properties:
-        motif:
+        collectivityIdentifier:
           type: string
-        date:
+        referees:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberIdentifier'
+        registrationFeePaid:
+          type: boolean
+        membershipDuesPaid:
+          type: boolean
+    MemberInformation:
+      type: object
+      properties:
+        firstName:
+          type: string
+        lastName:
+          type: string
+        birthDate:
           type: string
           format: date
-
-    UpdateMembre:
-      type: object
-      properties:
-        adresse:
+        gender:
+          $ref: '#/components/schemas/Gender'
+        address:
           type: string
-        telephone:
+        profession:
           type: string
+        phoneNumber:
+          type: int
         email:
           type: string
-          format: email
-        metier:
-          type: string
+        occupation:
+          $ref: '#/components/schemas/MemberOccupation'
+    Member:
+      type: object
+      allOf:
+        - $ref: '#/components/schemas/MemberInformation'
+      properties:
+        id:
+          $ref: '#/components/schemas/MemberIdentifier'
+        referees:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+    Gender:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+    MemberOccupation:
+      type: string
+      enum:
+        - JUNIOR
+        - SENIOR
+        - SECRETARY
+        - TREASURER
+        - VICE_PRESIDENT
+        - PRESIDENT
