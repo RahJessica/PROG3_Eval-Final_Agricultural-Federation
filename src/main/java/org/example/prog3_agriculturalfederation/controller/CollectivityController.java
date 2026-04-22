@@ -1,12 +1,12 @@
+package org.example.prog3_agriculturalfederation.controller;
+
 import org.example.prog3_agriculturalfederation.dto.CollectivityDTO;
+import org.example.prog3_agriculturalfederation.dto.CollectivityInformationDTO;
 import org.example.prog3_agriculturalfederation.dto.CreateCollectivityDTO;
 import org.example.prog3_agriculturalfederation.entity.Collectivity;
 import org.example.prog3_agriculturalfederation.service.CollectivityService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,4 +27,14 @@ import java.util.List;
             return ResponseEntity.status(201)
                     .body(service.createCollectivities(requests));
         }
+
+    @PutMapping("/{id}/informations")
+    public ResponseEntity<CollectivityDTO> updateInformations(
+            @PathVariable String id,
+            @RequestBody CollectivityInformationDTO request
+    ) {
+        return ResponseEntity.ok(
+                service.updateCollectivityInformation(id, request)
+        );
+    }
     }

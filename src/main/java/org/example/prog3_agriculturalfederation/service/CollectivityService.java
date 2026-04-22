@@ -47,7 +47,7 @@ public class CollectivityService {
             collectivitiesToSave.add(collectivity);
         }
 
-        collectivityRepository.saveAll(collectivitiesToSave);
+        collectivityRepository.saveAll(collectivitiesToSave); // saveAll dans le repo pour les requetes
 
         return collectivitiesToSave.stream()
                 .map(this::toDTO)
@@ -55,13 +55,14 @@ public class CollectivityService {
     }
 
     private void validateReferees(List<RefereeDTO> referees, List<Integer> memberIds) {
+        // membreIds : liste des membres de la collectivité
 
         if (referees == null || referees.size() < 2) {
             throw new RuntimeException("At least 2 referees required");
         }
 
         long fromSameCollectivity = referees.stream()
-                .filter(r -> memberIds.contains(r.getMemberId()))
+                .filter(r -> memberIds.contains(r.getMemberId())) // getMemberId vient de RefereeDTO
                 .count();
 
         if (fromSameCollectivity < 1) {
@@ -69,6 +70,7 @@ public class CollectivityService {
         }
     }
 
+    // Entity (base) -> DTO (réponse API)
     private CollectivityDTO toDTO(Collectivity c) {
 
         CollectivityDTO dto = new CollectivityDTO();
@@ -79,5 +81,28 @@ public class CollectivityService {
         dto.setStructure(null);
 
         return dto;
+    }
+
+    public CollectivityDTO updateCollectivityInformation(String id,
+                                                         CollectivityInformationDTO request) {
+
+        Collectivity collectivity = collectivityRepository.findById(id);
+
+        if (collectivity == null) {
+            throw new RuntimeException("Collectivity not found");
+        }
+
+        if (collectivityRepository.existsByNumber(request.getNumber())) {
+            throw new RuntimeException("Number already used");
+        }
+
+        if (collectivityRepository.existsByName(request.getName())) {
+            throw new RuntimeException("Name already used");
+        }
+
+        collectivity.setNameCollectivity(request.getName());
+        collectivityRepository.update(collectivity);
+
+        return toDTO(collectivity);
     }
 }

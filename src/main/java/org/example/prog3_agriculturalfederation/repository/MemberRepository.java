@@ -12,7 +12,7 @@ import java.util.List;
 public class MemberRepository {
 
     public boolean collectiviteExists(int id) {
-        String sql = "SELECT COUNT(*) FROM collectivite WHERE id_collectivite = ?";
+        String sql = "SELECT COUNT(id_collectivite) FROM collectivite WHERE id_collectivite = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -32,7 +32,7 @@ public class MemberRepository {
     public List<Member> saveAll(List<CreateMemberDTO> dtos) {
 
         String sql = """
-            INSERT INTO member(
+            INSERT INTO membre(
                 telephone, email, date_adhesion,
                 nom_membre, prenom_membre,
                 date_naissance, genre, adresse,
@@ -101,7 +101,7 @@ public class MemberRepository {
             return members;
         }
 
-        String sql = "SELECT * FROM member WHERE id_member = ANY (?)";
+        String sql = "SELECT id_membre, prenom_membre, nom_membre, email, telephone FROM membre WHERE id_membre = ANY (?)";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -113,7 +113,7 @@ public class MemberRepository {
 
             while (rs.next()) {
                 Member m = new Member();
-                m.setId(rs.getInt("id_member"));
+                m.setId(rs.getInt("id_membre"));
                 m.setFirstName(rs.getString("prenom_membre"));
                 m.setLastName(rs.getString("nom_membre"));
                 m.setEmail(rs.getString("email"));
@@ -130,7 +130,7 @@ public class MemberRepository {
 
     public Member findById(String id) {
 
-        String sql = "SELECT * FROM member WHERE id_member = ?";
+        String sql = "SELECT id_membre, prenom_membre, nom_membre, email, telephone FROM membre WHERE id_member = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
