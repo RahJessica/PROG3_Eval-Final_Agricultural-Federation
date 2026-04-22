@@ -64,6 +64,25 @@ CREATE TABLE compte (
                                 REFERENCES member(id_membre)
 );
 
+-- CREATE TABLE financial_account (
+--                                    id VARCHAR PRIMARY KEY,
+--                                    collectivity_id VARCHAR NOT NULL,
+--                                    type VARCHAR NOT NULL, -- CASH, BANK, MOBILE
+--                                    balance NUMERIC NOT NULL,
+--
+--     -- Bank
+--                                    holder_name VARCHAR,
+--                                    bank_name VARCHAR,
+--                                    bank_code VARCHAR,
+--                                    branch_code VARCHAR,
+--                                    account_number VARCHAR,
+--                                    rib_key VARCHAR,
+--
+--     -- Mobile
+--                                    mobile_service VARCHAR,
+--                                    mobile_number VARCHAR
+-- );
+
 CREATE TABLE cotisation (
                             id_cotisation SERIAL PRIMARY KEY,
                             montant DECIMAL(15,2),
