@@ -1,5 +1,7 @@
 package org.example.prog3_agriculturalfederation.entity;
 
+import org.example.prog3_agriculturalfederation.entity.enums.AccountType;
+
 public class FinancialAccount {
     private String id;
     private String collectivityId;
