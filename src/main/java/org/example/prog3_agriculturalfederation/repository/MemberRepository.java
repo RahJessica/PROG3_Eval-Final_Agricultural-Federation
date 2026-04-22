@@ -127,4 +127,32 @@ public class MemberRepository {
 
         return members;
     }
+
+    public Member findById(String id) {
+
+        String sql = "SELECT * FROM member WHERE id_member = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, Integer.parseInt(id));
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Member m = new Member();
+                m.setId(rs.getInt("id_member"));
+                m.setFirstName(rs.getString("prenom_membre"));
+                m.setLastName(rs.getString("nom_membre"));
+                m.setEmail(rs.getString("email"));
+                m.setPhoneNumber(rs.getString("telephone"));
+                return m;
+            }
+
+            return null;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error finding member by id", e);
+        }
+    }
 }

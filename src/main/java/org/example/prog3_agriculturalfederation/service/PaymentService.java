@@ -1,6 +1,7 @@
 package org.example.prog3_agriculturalfederation.service;
 
 import org.example.prog3_agriculturalfederation.dto.CreateMemberPaymentDTO;
+import org.example.prog3_agriculturalfederation.dto.MemberPaymentDTO;
 import org.example.prog3_agriculturalfederation.entity.CollectivityTransaction;
 import org.example.prog3_agriculturalfederation.entity.Member;
 import org.example.prog3_agriculturalfederation.entity.MemberPayment;
@@ -8,6 +9,9 @@ import org.example.prog3_agriculturalfederation.entity.MembershipFee;
 import org.example.prog3_agriculturalfederation.entity.enums.Frequency;
 import org.example.prog3_agriculturalfederation.entity.enums.PaymentMode;
 import org.example.prog3_agriculturalfederation.repository.MemberRepository;
+import org.example.prog3_agriculturalfederation.repository.MembershipFeeRepository;
+import org.example.prog3_agriculturalfederation.repository.PaymentRepository;
+import org.example.prog3_agriculturalfederation.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -22,18 +26,29 @@ public class PaymentService {
     private final PaymentRepository paymentRepo;
     private final TransactionRepository transactionRepo;
 
-    public List<MemberPayment> createPayments(String memberId,
-                                              List<CreateMemberPaymentDTO> dtos) {
+    public PaymentService(MemberRepository memberRepo, MembershipFeeRepository feeRepo, PaymentRepository paymentRepo, TransactionRepository transactionRepo) {
+        this.memberRepo = memberRepo;
+        this.feeRepo = feeRepo;
+        this.paymentRepo = paymentRepo;
+        this.transactionRepo = transactionRepo;
+    }
 
-        Member member = memberRepo.findById(memberId)
-                .orElseThrow(() -> new RuntimeException("Member not found"));
+    public List<MemberPaymentDTO> createPayments(String memberId,
+                                                 List<CreateMemberPaymentDTO> dtos) {
+
+        Member member = memberRepo.findById(memberId);
+        if (member == null) {
+            throw new RuntimeException("Member not found");
+        }
 
         List<MemberPayment> payments = new ArrayList<>();
 
         for (CreateMemberPaymentDTO dto : dtos) {
 
-            MembershipFee fee = feeRepo.findById(dto.getMembershipFeeIdentifier())
-                    .orElseThrow(() -> new RuntimeException("Fee not found"));
+            MembershipFee fee = feeRepo.findById(dto.getMembershipFeeIdentifier());
+            if (fee == null) {
+                throw new RuntimeException("Fee not found");
+            }
 
             if (dto.getAmount() <= 0) {
                 throw new RuntimeException("Invalid amount");
@@ -57,7 +72,6 @@ public class PaymentService {
             transaction.setCreationDate(LocalDate.now());
             transaction.setAccountId(dto.getAccountCreditedIdentifier());
             transaction.setMemberId(memberId);
-            transaction.setCollectivityId(member.getCollectivityId());
 
             transactionRepo.save(transaction);
 
@@ -66,7 +80,13 @@ public class PaymentService {
             payments.add(payment);
         }
 
-        return payments;
+        List<MemberPaymentDTO> result = new ArrayList<>();
+
+        for (MemberPayment payment : payments) {
+            result.add(toDTO(payment));
+        }
+
+        return result;
     }
 
     private void handleFederationShare(MembershipFee fee, double amount, Member member) {
@@ -74,7 +94,7 @@ public class PaymentService {
         if (fee.getFrequency() == Frequency.MONTHLY ||
                 fee.getFrequency() == Frequency.ANNUALLY) {
 
-            double percentage = 0.1; // 10%
+            double percentage = 0.1; // 10% reversés
             double federationAmount = amount * percentage;
 
             CollectivityTransaction federationTx = new CollectivityTransaction();
@@ -88,5 +108,17 @@ public class PaymentService {
 
             transactionRepo.save(federationTx);
         }
+    }
+
+    private MemberPaymentDTO toDTO(MemberPayment payment) {
+
+        MemberPaymentDTO dto = new MemberPaymentDTO();
+
+        dto.setId(payment.getId());
+        dto.setAmount(payment.getAmount());
+        dto.setPaymentMode(payment.getPaymentMode());
+        dto.setCreationDate(payment.getCreationDate());
+
+        return dto;
     }
 }
