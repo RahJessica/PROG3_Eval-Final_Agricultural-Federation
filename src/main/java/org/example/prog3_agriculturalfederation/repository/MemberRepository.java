@@ -1,10 +1,9 @@
 package org.example.prog3_agriculturalfederation.repository;
 
 import org.example.prog3_agriculturalfederation.entity.Member;
+import org.springframework.stereotype.Repository;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 public class MemberRepository {

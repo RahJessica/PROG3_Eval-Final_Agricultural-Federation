@@ -1,10 +1,16 @@
 package org.example.prog3_agriculturalfederation.config;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+@Configuration
 public class DatabaseConnection {
+
+    @Bean
     public static Connection getConnection() {
         try {
             String JDBC_URL = System.getenv("DB_URL");

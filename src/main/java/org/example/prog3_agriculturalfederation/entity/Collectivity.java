@@ -1,6 +1,7 @@
 package org.example.prog3_agriculturalfederation.entity;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Objects;
 
 public class Collectivity {
@@ -12,8 +13,11 @@ public class Collectivity {
     private Boolean autorisation;
     private String numero;
     private Integer idFederation;
+    private List<Member> members;
 
-    public Collectivity(Integer idCollectivity, String nameCollectivity, String town, String speciality, LocalDate creationDate, Boolean autorisation, String numero, Integer idFederation) {
+    public Collectivity() {}
+
+    public Collectivity(Integer idCollectivity, String nameCollectivity, String town, String speciality, LocalDate creationDate, Boolean autorisation, String numero, Integer idFederation, List<Member> members) {
         this.idCollectivity = idCollectivity;
         this.nameCollectivity = nameCollectivity;
         this.town = town;
@@ -22,6 +26,7 @@ public class Collectivity {
         this.autorisation = autorisation;
         this.numero = numero;
         this.idFederation = idFederation;
+        this.members = members;
     }
 
     public Integer getIdCollectivity() {
@@ -86,6 +91,14 @@ public class Collectivity {
 
     public void setIdFederation(Integer idFederation) {
         this.idFederation = idFederation;
+    }
+
+    public List<Member> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<Member> members) {
+        this.members = members;
     }
 
     @Override

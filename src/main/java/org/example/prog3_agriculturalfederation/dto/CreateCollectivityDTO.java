@@ -3,18 +3,19 @@ package org.example.prog3_agriculturalfederation.dto;
 import java.util.List;
 
 public class CreateCollectivityDTO {
-    private String location;
+    private String town;
     private Boolean federationApproval;
     private CreateCollectivityStructureDTO structure;
     private List<String> members;
+    private List<RefereeDTO> referees;
 
 
-    public String getLocation() {
-        return location;
+    public String getTown() {
+        return town;
     }
 
-    public void setLocation(String location) {
-        this.location = location;
+    public void setTown(String location) {
+        this.town = location;
     }
 
     public Boolean getFederationApproval() {
@@ -39,5 +40,13 @@ public class CreateCollectivityDTO {
 
     public void setMembers(List<String> members) {
         this.members = members;
+    }
+
+    public List<RefereeDTO> getReferees() {
+        return referees;
+    }
+
+    public void setReferees(List<RefereeDTO> referees) {
+        this.referees = referees;
     }
 }
