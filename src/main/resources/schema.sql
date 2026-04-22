@@ -29,7 +29,7 @@ CREATE TABLE collectivite (
                                       REFERENCES federation(id_federation)
 );
 
-CREATE TABLE membre (
+CREATE TABLE member (
                         id_membre SERIAL PRIMARY KEY,
                         telephone VARCHAR(20),
                         email VARCHAR(150),
@@ -61,7 +61,7 @@ CREATE TABLE compte (
                                 REFERENCES collectivite(id_collectivite),
                         CONSTRAINT fk_compte_membre
                             FOREIGN KEY (id_membre)
-                                REFERENCES membre(id_membre)
+                                REFERENCES member(id_membre)
 );
 
 CREATE TABLE cotisation (
@@ -77,7 +77,7 @@ CREATE TABLE cotisation (
                                     REFERENCES collectivite(id_collectivite),
                             CONSTRAINT fk_cotisation_membre
                                 FOREIGN KEY (id_membre)
-                                    REFERENCES membre(id_membre)
+                                    REFERENCES member(id_membre)
 );
 
 CREATE TABLE activite (
@@ -105,7 +105,7 @@ CREATE TABLE presence (
                           id_activite INT,
                           CONSTRAINT fk_presence_membre
                               FOREIGN KEY (id_membre)
-                                  REFERENCES membre(id_membre),
+                                  REFERENCES member(id_membre),
                           CONSTRAINT fk_presence_activite
                               FOREIGN KEY (id_activite)
                                   REFERENCES activite(id_activite)
@@ -117,7 +117,7 @@ CREATE TABLE poste (
                        id_membre INT,
                        CONSTRAINT fk_poste_membre
                            FOREIGN KEY (id_membre)
-                               REFERENCES membre(id_membre)
+                               REFERENCES member(id_membre)
 );
 
 CREATE TABLE mandat (
