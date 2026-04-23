@@ -5,10 +5,7 @@ import org.example.prog3_agriculturalfederation.entity.Collectivity;
 import org.example.prog3_agriculturalfederation.entity.Member;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,13 +18,18 @@ public class CollectivityRepository {
     }
 
     public void saveAll(List<Collectivity> collectivities) {
-        String sql = "INSERT INTO collectivite (id_collectivite, ville) VALUES (?, ?)";
+        String sql = "INSERT INTO collectivite (id_collectivite, nom_collectivite, ville, specialite, creation_date, autorisation, numero) VALUES (?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Collectivity c : collectivities) {
                 ps.setInt(1, c.getIdCollectivity());
-                ps.setString(2, c.getTown());
+                ps.setString(2, c.getNameCollectivity());
+                ps.setString(3, c.getTown());
+                ps.setString(4, c.getSpeciality());
+                ps.setDate(5, Date.valueOf(c.getCreationDate()));
+                ps.setBoolean(6, c.getAutorisation());
+                ps.setString(7, c.getNumero());
                 ps.addBatch();
             }
 
@@ -40,7 +42,7 @@ public class CollectivityRepository {
 
     public Collectivity findById(String id) {
 
-        String sql = "SELECT * FROM collectivite WHERE id_collectivite = ?";
+        String sql = "SELECT id_collectivite, ville FROM collectivite WHERE id_collectivite = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -65,14 +67,18 @@ public class CollectivityRepository {
 
         String sql = """
         UPDATE collectivite
-        SET ville = ?
-        WHERE id_collectivite = ?
+                SET nom_collectivite = ?,
+                    numero = ?,
+                    ville = ?
+                WHERE id_collectivite = ?
     """;
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setString(1, c.getTown());
-            ps.setInt(2, c.getIdCollectivity());
+            ps.setString(1, c.getNameCollectivity());
+            ps.setString(2, c.getNumero());
+            ps.setString(3, c.getTown());
+            ps.setInt(4, c.getIdCollectivity());
 
             ps.executeUpdate();
 
@@ -136,7 +142,7 @@ public class CollectivityRepository {
 
             while (rs.next()) {
                 Member m = new Member();
-                m.setId(rs.getInt("id_member"));
+                m.setId(rs.getInt("id_membre"));
                 m.setFirstName(rs.getString("prenom_membre"));
                 m.setLastName(rs.getString("nom_membre"));
                 m.setEmail(rs.getString("email"));
