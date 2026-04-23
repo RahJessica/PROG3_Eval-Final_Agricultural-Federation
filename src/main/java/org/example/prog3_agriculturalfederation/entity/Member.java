@@ -1,10 +1,12 @@
 package org.example.prog3_agriculturalfederation.entity;
 
+import org.example.prog3_agriculturalfederation.dto.RefereeDTO;
 import org.example.prog3_agriculturalfederation.entity.enums.Gender;
 import org.example.prog3_agriculturalfederation.entity.enums.MemberOccupation;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 public class Member {
     private Integer id;
@@ -18,8 +20,9 @@ public class Member {
     private String address;
     private String profession;
     private MemberOccupation occupation;
+    public List<RefereeDTO> referees;
 
-    public Member(Integer id, String lastName, String firstName, LocalDate birthDate, Gender gender, String phoneNumber, String email, LocalDate dateAdhesion, String address, String profession, MemberOccupation occupation) {
+    public Member(Integer id, String lastName, String firstName, LocalDate birthDate, Gender gender, String phoneNumber, String email, LocalDate dateAdhesion, String address, String profession, MemberOccupation occupation, List<RefereeDTO> referees) {
         this.id = id;
         this.lastName = lastName;
         this.firstName = firstName;
@@ -31,6 +34,7 @@ public class Member {
         this.address = address;
         this.profession = profession;
         this.occupation = occupation;
+        this.referees = referees;
     }
 
     public Member() {
@@ -123,6 +127,14 @@ public class Member {
 
     public void setOccupation(MemberOccupation occupation) {
         this.occupation = occupation;
+    }
+
+    public List<RefereeDTO> getReferees() {
+        return referees;
+    }
+
+    public void setReferees(List<RefereeDTO> referees) {
+        this.referees = referees;
     }
 
     @Override

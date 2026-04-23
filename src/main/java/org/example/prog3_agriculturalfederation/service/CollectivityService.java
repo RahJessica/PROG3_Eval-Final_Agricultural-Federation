@@ -46,8 +46,6 @@ public class CollectivityService {
                 throw new RuntimeException("Members not found");
             }
 
-            validateReferees(req.getReferees(), req.getMembers());
-
             Collectivity collectivity = new Collectivity();
             collectivity.setTown(req.getTown());
             collectivity.setCreationDate(java.time.LocalDate.now());
@@ -61,22 +59,6 @@ public class CollectivityService {
         return collectivitiesToSave.stream()
                 .map(this::toDTO)
                 .collect(Collectors.toList());
-    }
-
-    private void validateReferees(List<RefereeDTO> referees, List<Integer> memberIds) {
-        // membreIds : liste des membres de la collectivité
-
-        if (referees == null || referees.size() < 2) {
-            throw new RuntimeException("At least 2 referees required");
-        }
-
-        long fromSameCollectivity = referees.stream()
-                .filter(r -> memberIds.contains(r.getMemberId())) // getMemberId vient de RefereeDTO
-                .count();
-
-        if (fromSameCollectivity < 1) {
-            throw new RuntimeException("At least one referee must belong to the collectivity context");
-        }
     }
 
     // Entity (base) -> DTO (réponse API)
