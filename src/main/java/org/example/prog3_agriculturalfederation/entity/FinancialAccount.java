@@ -20,6 +20,10 @@ public class FinancialAccount {
     private String mobileService;
     private String mobileNumber;
 
+    public FinancialAccount() {
+
+    }
+
     public String getAccountNumber() {
         return accountNumber;
     }
