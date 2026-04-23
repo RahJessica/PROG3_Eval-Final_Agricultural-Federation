@@ -2,6 +2,7 @@ package org.example.prog3_agriculturalfederation.controller;
 
 import org.example.prog3_agriculturalfederation.dto.*;
 import org.example.prog3_agriculturalfederation.entity.Collectivity;
+import org.example.prog3_agriculturalfederation.entity.FinancialAccount;
 import org.example.prog3_agriculturalfederation.service.CollectivityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

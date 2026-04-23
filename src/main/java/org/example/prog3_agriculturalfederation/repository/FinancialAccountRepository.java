@@ -1,12 +1,13 @@
 package org.example.prog3_agriculturalfederation.repository;
 
 import org.example.prog3_agriculturalfederation.entity.FinancialAccount;
+import org.example.prog3_agriculturalfederation.entity.enums.AccountType;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class FinancialAccountRepository {
@@ -33,7 +34,7 @@ public class FinancialAccountRepository {
                 rib_key, mobile_service, mobile_number) values(?,?,?,?,?,?,?,?,?,?,?,?)""";
         PreparedStatement preparedStatement = connection.prepareStatement(sql);
 
-        preparedStatement.setInt(1, acc.getId());
+        preparedStatement.setString(1, acc.getId());
         preparedStatement.setInt(2, acc.getCollectivityId());
         preparedStatement.setString(3, acc.getType().name());
         preparedStatement.setDouble(4, acc.getBalance());
@@ -47,5 +48,50 @@ public class FinancialAccountRepository {
         preparedStatement.setString(12, acc.getMobileNumber());
 
         preparedStatement.execute();
+    }
+
+    public List<FinancialAccount> findByCollectivityId(String collectivityId) throws SQLException {
+
+        String sql = "SELECT * FROM financial_account WHERE collectivity_id = ?";
+
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, collectivityId);
+
+        ResultSet rs = stmt.executeQuery();
+
+        List<FinancialAccount> accounts = new ArrayList<>();
+
+        while (rs.next()) {
+            FinancialAccount acc = new FinancialAccount();
+            acc.setId(rs.getString("id"));
+            acc.setType(AccountType.valueOf(rs.getString("type")));
+            acc.setBalance(rs.getDouble("balance"));
+            acc.setHolderName(rs.getString("holder_name"));
+
+            accounts.add(acc);
+        }
+
+        return accounts;
+    }
+
+    public double sumTransactions(String accountId, LocalDate at) throws SQLException {
+
+        String sql = """
+            SELECT COALESCE(SUM(amount), 0) as total
+            FROM collectivity_transaction
+            WHERE account_id = ? AND creation_date <= ?
+        """;
+
+        PreparedStatement stmt = connection.prepareStatement(sql);
+        stmt.setString(1, accountId);
+        stmt.setDate(2, Date.valueOf(at));
+
+        ResultSet rs = stmt.executeQuery();
+
+        if (rs.next()) {
+            return rs.getDouble("total");
+        }
+
+        return 0;
     }
 }
