@@ -65,8 +65,8 @@ CREATE TABLE compte (
 );
 
 -- CREATE TABLE financial_account (
---                                    id VARCHAR PRIMARY KEY,
---                                    collectivity_id VARCHAR NOT NULL,
+--                                    id_account serial PRIMARY KEY,
+--                                    collectivity_id int NOT NULL,
 --                                    type VARCHAR NOT NULL, -- CASH, BANK, MOBILE
 --                                    balance NUMERIC NOT NULL,
 --
