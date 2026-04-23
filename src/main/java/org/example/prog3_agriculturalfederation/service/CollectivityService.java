@@ -4,8 +4,11 @@ import org.example.prog3_agriculturalfederation.dto.*;
 import org.example.prog3_agriculturalfederation.entity.*;
 import org.example.prog3_agriculturalfederation.repository.CollectivityRepository;
 import org.example.prog3_agriculturalfederation.repository.MemberRepository;
+import org.example.prog3_agriculturalfederation.repository.MembershipFeeRepository;
+import org.example.prog3_agriculturalfederation.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -14,11 +17,17 @@ public class CollectivityService {
 
     private final MemberRepository memberRepository;
     private final CollectivityRepository collectivityRepository;
+    private final MembershipFeeRepository feeRepository;
+    private final TransactionRepository transactionRepository;
 
     public CollectivityService(MemberRepository memberRepository,
-                               CollectivityRepository collectivityRepository) {
+                               CollectivityRepository collectivityRepository,
+                               MembershipFeeRepository feeRepository,
+                               TransactionRepository transactionRepository) {
         this.memberRepository = memberRepository;
         this.collectivityRepository = collectivityRepository;
+        this.feeRepository = feeRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     public List<CollectivityDTO> createCollectivities(List<CreateCollectivityDTO> requests) {
@@ -104,5 +113,101 @@ public class CollectivityService {
         collectivityRepository.update(collectivity);
 
         return toDTO(collectivity);
+    }
+
+    public List<MembershipFeeDTO> createMembershipFees(String collectivityId,
+                                                       List<CreateMembershipFeeDTO> request) {
+
+        Collectivity collectivity = collectivityRepository.findById(collectivityId);
+
+        if (collectivity == null) {
+            throw new RuntimeException("Collectivity not found");
+        }
+
+        List<MembershipFee> fees = new ArrayList<>();
+
+        for (CreateMembershipFeeDTO dto : request) {
+
+            if (dto.getAmount() < 0) {
+                throw new RuntimeException("Amount must be positive");
+            }
+
+            MembershipFee fee = new MembershipFee();
+            fee.setId(UUID.randomUUID().toString());
+            fee.setAmount(dto.getAmount());
+            fee.setLabel(dto.getLabel());
+            fee.setFrequency(dto.getFrequency());
+            fee.setEligibleFrom(dto.getEligibleFrom());
+            fee.setCollectivityId(collectivityId);
+
+            fees.add(fee);
+        }
+
+        feeRepository.saveAll(fees);
+
+        return fees.stream().map(this::toFeeDTO).toList();
+    }
+
+    public List<MembershipFeeDTO> getMembershipFees(String collectivityId) {
+
+        if (collectivityRepository.findById(collectivityId) == null) {
+            throw new RuntimeException("Collectivity not found");
+        }
+
+        return feeRepository.findAllByCollectivity(collectivityId)
+                .stream()
+                .map(this::toFeeDTO)
+                .toList();
+    }
+
+    public List<CollectivityTransactionDTO> getTransactions(String collectivityId,
+                                                            String from,
+                                                            String to) {
+
+        if (collectivityRepository.findById(collectivityId) == null) {
+            throw new RuntimeException("Collectivity not found");
+        }
+
+        return transactionRepository.findBetweenDates(
+                        collectivityId,
+                        LocalDate.parse(from),
+                        LocalDate.parse(to)
+                ).stream()
+                .map(this::toTransactionDTO)
+                .toList();
+    }
+
+    private MembershipFeeDTO toFeeDTO(MembershipFee fee) {
+        MembershipFeeDTO dto = new MembershipFeeDTO();
+        dto.setId(fee.getId());
+        dto.setAmount(fee.getAmount());
+        dto.setLabel(fee.getLabel());
+        return dto;
+    }
+
+    private CollectivityTransactionDTO toTransactionDTO(CollectivityTransaction t) {
+        CollectivityTransactionDTO dto = new CollectivityTransactionDTO();
+        dto.setId(t.getId());
+        dto.setAmount(t.getAmount());
+        dto.setCreationDate(t.getCreationDate());
+        return dto;
+    }
+
+    public List<CollectivityTransactionDTO> getTransactions(String collectivityId,
+                                                            LocalDate from,
+                                                            LocalDate to) {
+
+        if (collectivityRepository.findById(collectivityId) == null) {
+            throw new RuntimeException("Collectivity not found");
+        }
+
+        return transactionRepository.findBetweenDates(
+                        collectivityId,
+                        from,
+                        to
+                ).stream()
+                .map(this::toTransactionDTO)
+                .toList();
+
     }
 }
