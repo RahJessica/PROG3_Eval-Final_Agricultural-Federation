@@ -34,11 +34,12 @@ public class FinancialAccountService {
         }
 
         FinancialAccount acc = new FinancialAccount();
-        acc.setId(id);
+        acc.setId(Integer.valueOf(UUID.randomUUID().toString()));
         acc.setCollectivityId(collectivityId);
         acc.setType(type);
         acc.setBalance(dto.balance);
         acc.setHolderName(dto.holderName);
+        acc.setBankName(dto.bankName);
         acc.setBankCode(dto.bankCode);
         acc.setBranchCode(dto.branchCode);
         acc.setRibKey(dto.ribKey);
