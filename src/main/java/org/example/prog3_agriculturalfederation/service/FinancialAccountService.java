@@ -17,12 +17,13 @@ public class FinancialAccountService {
         this.repository = repository;
     }
 
-    public FinancialAccount createAccount (Integer collectivityId, CreateFinancialAccountDTO dto) throws SQLException{
+    public FinancialAccount createAccount (Integer collectivityId, CreateFinancialAccountDTO dto) throws SQLException {
         AccountType type = AccountType.valueOf(dto.type);
 
         if(type == AccountType.CAISSE && repository.existCashAccount(String.valueOf(collectivityId))){
             throw new RuntimeException("collectivity already hahs a cash account");
         }
+
 
         if(type==AccountType.BANQUE){
             if(dto.bankCode.length() != 5 ||
