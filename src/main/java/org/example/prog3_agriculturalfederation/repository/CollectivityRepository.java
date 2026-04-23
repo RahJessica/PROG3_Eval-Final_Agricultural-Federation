@@ -1,12 +1,15 @@
 package org.example.prog3_agriculturalfederation.repository;
 
+import org.example.prog3_agriculturalfederation.config.DatabaseConnection;
 import org.example.prog3_agriculturalfederation.entity.Collectivity;
+import org.example.prog3_agriculturalfederation.entity.Member;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -80,7 +83,7 @@ public class CollectivityRepository {
 
     public boolean existsByName(String name) {
 
-        String sql = "SELECT COUNT(*) FROM collectivite WHERE nom_collectivite = ?";
+        String sql = "SELECT COUNT(id_collectivite) FROM collectivite WHERE nom_collectivite = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -100,7 +103,7 @@ public class CollectivityRepository {
 
     public boolean existsByNumber(int number) {
 
-        String sql = "SELECT COUNT(*) FROM collectivite WHERE numero = ?";
+        String sql = "SELECT COUNT(id_collectivite) FROM collectivite WHERE numero = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
@@ -116,5 +119,36 @@ public class CollectivityRepository {
         }
 
         return false;
+    }
+
+    public List<Member> findByCollectivityId(int collectivityId) {
+
+        List<Member> members = new ArrayList<>();
+
+        String sql = "SELECT * FROM member WHERE id_collectivite = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, collectivityId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Member m = new Member();
+                m.setId(rs.getInt("id_member"));
+                m.setFirstName(rs.getString("prenom_membre"));
+                m.setLastName(rs.getString("nom_membre"));
+                m.setEmail(rs.getString("email"));
+                m.setPhoneNumber(rs.getString("telephone"));
+
+                members.add(m);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching members by collectivity", e);
+        }
+
+        return members;
     }
 }

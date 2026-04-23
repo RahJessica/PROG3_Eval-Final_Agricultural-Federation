@@ -133,7 +133,6 @@ public class CollectivityService {
             }
 
             MembershipFee fee = new MembershipFee();
-            fee.setId(UUID.randomUUID().toString());
             fee.setAmount(dto.getAmount());
             fee.setLabel(dto.getLabel());
             fee.setFrequency(dto.getFrequency());
@@ -193,6 +192,16 @@ public class CollectivityService {
         return dto;
     }
 
+    private MemberDTO toMemberDTO(Member m) {
+        MemberDTO dto = new MemberDTO();
+        dto.setId(m.getId());
+        dto.setFirstName(m.getFirstName());
+        dto.setLastName(m.getLastName());
+        dto.setEmail(m.getEmail());
+        dto.setPhoneNumber(m.getPhoneNumber());
+        return dto;
+    }
+
     public List<CollectivityTransactionDTO> getTransactions(String collectivityId,
                                                             LocalDate from,
                                                             LocalDate to) {
@@ -209,5 +218,28 @@ public class CollectivityService {
                 .map(this::toTransactionDTO)
                 .toList();
 
+    }
+
+    public CollectivityDTO getCollectivityById(String id) {
+
+        Collectivity collectivity = collectivityRepository.findById(id);
+
+        if (collectivity == null) {
+            throw new RuntimeException("Collectivity not found");
+        }
+
+        List<Member> members = memberRepository.findByCollectivityId(
+                collectivity.getIdCollectivity()
+        );
+
+        CollectivityDTO dto = toDTO(collectivity);
+
+        dto.setMembers(
+                members.stream()
+                        .map(this::toMemberDTO)
+                        .toList()
+        );
+
+        return dto;
     }
 }

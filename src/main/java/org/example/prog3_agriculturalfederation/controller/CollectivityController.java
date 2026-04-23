@@ -65,4 +65,9 @@ import java.util.List;
                 service.getTransactions(id, from, to)
         );
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CollectivityDTO> getById(@PathVariable String id) {
+        return ResponseEntity.ok(service.getCollectivityById(id));
+    }
 }
