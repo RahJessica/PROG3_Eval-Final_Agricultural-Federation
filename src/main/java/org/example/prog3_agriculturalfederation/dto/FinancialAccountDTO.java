@@ -4,4 +4,5 @@ public class FinancialAccountDTO {
     public String id;
     public String type;
     public double balance;
+    public String holderName;
 }

@@ -1,12 +1,17 @@
 package org.example.prog3_agriculturalfederation.service;
 
 import org.example.prog3_agriculturalfederation.dto.CreateFinancialAccountDTO;
+import org.example.prog3_agriculturalfederation.dto.FinancialAccountDTO;
 import org.example.prog3_agriculturalfederation.entity.FinancialAccount;
 import org.example.prog3_agriculturalfederation.entity.enums.AccountType;
 import org.example.prog3_agriculturalfederation.repository.FinancialAccountRepository;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Service
@@ -35,7 +40,7 @@ public class FinancialAccountService {
         }
 
         FinancialAccount acc = new FinancialAccount();
-        acc.setId(Integer.valueOf(UUID.randomUUID().toString()));
+        acc.setId(UUID.randomUUID().toString());
         acc.setCollectivityId(collectivityId);
         acc.setType(type);
         acc.setBalance(dto.balance);
@@ -51,5 +56,43 @@ public class FinancialAccountService {
         repository.save(acc);
         return acc;
 
+    }
+
+    public List<FinancialAccountDTO> getAccounts(String collectivityId, LocalDate at) {
+
+        try {
+
+            List<FinancialAccount> accounts =
+                    repository.findByCollectivityId(collectivityId);
+
+            if (accounts.isEmpty()) {
+                throw new NoSuchElementException("Collectivity not found");
+            }
+            if (at==null){
+                throw new IllegalArgumentException("at parameter required ");
+            }
+            List<FinancialAccountDTO> result = new ArrayList<>();
+
+            for (FinancialAccount acc : accounts) {
+
+                double transactionsSum =
+                        repository.sumTransactions(acc.getId(), at);
+
+                FinancialAccountDTO dto = new FinancialAccountDTO();
+                dto.id = acc.getId();
+                dto.type = acc.getType().name();
+
+                dto.balance = acc.getBalance() + transactionsSum;
+
+                dto.holderName = acc.getHolderName();
+
+                result.add(dto);
+            }
+
+            return result;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Database error", e);
+        }
     }
 }
