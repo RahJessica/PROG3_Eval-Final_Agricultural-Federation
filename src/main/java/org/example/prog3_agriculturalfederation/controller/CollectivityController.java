@@ -1,8 +1,6 @@
 package org.example.prog3_agriculturalfederation.controller;
 
-import org.example.prog3_agriculturalfederation.dto.CollectivityDTO;
-import org.example.prog3_agriculturalfederation.dto.CollectivityInformationDTO;
-import org.example.prog3_agriculturalfederation.dto.CreateCollectivityDTO;
+import org.example.prog3_agriculturalfederation.dto.*;
 import org.example.prog3_agriculturalfederation.entity.Collectivity;
 import org.example.prog3_agriculturalfederation.entity.FinancialAccount;
 import org.example.prog3_agriculturalfederation.service.CollectivityService;
@@ -38,4 +36,39 @@ import java.util.List;
                 service.updateCollectivityInformation(id, request)
         );
     }
+
+    @PostMapping("/{id}/membershipFees")
+    public ResponseEntity<List<MembershipFeeDTO>> createMembershipFees(
+            @PathVariable String id,
+            @RequestBody List<CreateMembershipFeeDTO> request
+    ) {
+        return ResponseEntity.ok(
+                service.createMembershipFees(id, request)
+        );
     }
+
+    @GetMapping("/{id}/membershipFees")
+    public ResponseEntity<List<MembershipFeeDTO>> getMembershipFees(
+            @PathVariable String id
+    ) {
+        return ResponseEntity.ok(
+                service.getMembershipFees(id)
+        );
+    }
+
+    @GetMapping("/{id}/transactions")
+    public ResponseEntity<List<CollectivityTransactionDTO>> getTransactions(
+            @PathVariable String id,
+            @RequestParam String from,
+            @RequestParam String to
+    ) {
+        return ResponseEntity.ok(
+                service.getTransactions(id, from, to)
+        );
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CollectivityDTO> getById(@PathVariable String id) {
+        return ResponseEntity.ok(service.getCollectivityById(id));
+    }
+}

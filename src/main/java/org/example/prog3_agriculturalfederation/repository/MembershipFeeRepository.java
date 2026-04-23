@@ -1,6 +1,7 @@
 package org.example.prog3_agriculturalfederation.repository;
 
 import org.example.prog3_agriculturalfederation.config.DatabaseConnection;
+import org.example.prog3_agriculturalfederation.dto.CollectivityTransactionDTO;
 import org.example.prog3_agriculturalfederation.entity.MembershipFee;
 import org.springframework.stereotype.Repository;
 
@@ -70,5 +71,40 @@ public class MembershipFeeRepository {
         }
 
         return fees;
+    }
+
+    public void saveAll(List<MembershipFee> fees) {
+
+        String sql = """
+        INSERT INTO cotisation (
+            id_cotisation,
+            montant,
+            frequence,
+            libelle,
+            date_eligibilite,
+            id_collectivite
+        ) VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            for (MembershipFee fee : fees) {
+
+                ps.setString(1, fee.getId());
+                ps.setDouble(2, fee.getAmount());
+                ps.setString(3, fee.getFrequency().name()); // enum → string
+                ps.setString(4, fee.getLabel());
+                ps.setDate(5, java.sql.Date.valueOf(fee.getEligibleFrom()));
+                ps.setString(6, fee.getCollectivityId());
+
+                ps.addBatch();
+            }
+
+            ps.executeBatch();
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error saving membership fees", e);
+        }
     }
 }

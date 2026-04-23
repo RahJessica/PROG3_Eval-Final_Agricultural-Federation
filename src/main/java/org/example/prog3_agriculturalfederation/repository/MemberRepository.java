@@ -155,4 +155,35 @@ public class MemberRepository {
             throw new RuntimeException("Error finding member by id", e);
         }
     }
+
+    public List<Member> findByCollectivityId(int collectivityId) {
+
+        List<Member> members = new ArrayList<>();
+
+        String sql = "SELECT * FROM member WHERE id_collectivite = ?";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, collectivityId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Member m = new Member();
+                m.setId(rs.getInt("id_member"));
+                m.setFirstName(rs.getString("prenom_membre"));
+                m.setLastName(rs.getString("nom_membre"));
+                m.setEmail(rs.getString("email"));
+                m.setPhoneNumber(rs.getString("telephone"));
+
+                members.add(m);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching members by collectivity", e);
+        }
+
+        return members;
+    }
 }
