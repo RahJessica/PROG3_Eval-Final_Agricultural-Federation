@@ -26,7 +26,7 @@ public class FinancialAccountService {
         AccountType type = AccountType.valueOf(dto.type);
 
         if(type == AccountType.CAISSE && repository.existCashAccount(String.valueOf(collectivityId))){
-            throw new RuntimeException("collectivity already hahs a cash account");
+            throw new RuntimeException("collectivity already has a cash account");
         }
 
 
@@ -40,7 +40,6 @@ public class FinancialAccountService {
         }
 
         FinancialAccount acc = new FinancialAccount();
-        acc.setId(UUID.randomUUID().toString());
         acc.setCollectivityId(collectivityId);
         acc.setType(type);
         acc.setBalance(dto.balance);
@@ -79,7 +78,8 @@ public class FinancialAccountService {
                         repository.sumTransactions(acc.getId(), at);
 
                 FinancialAccountDTO dto = new FinancialAccountDTO();
-                dto.id = acc.getId();
+                Integer id;
+                dto.id = String.valueOf(acc.getId());
                 dto.type = acc.getType().name();
 
                 dto.balance = acc.getBalance() + transactionsSum;
