@@ -253,29 +253,33 @@ public class CollectivityService {
         List<CollectivityTransaction> transactions =
                 transactionRepository.findBetweenDates(collectivityId, from, to);
 
-        Map<Integer, Double> paidByMember = new HashMap<>();
+        Map<String, Double> paidByMember = new HashMap<>();
 
         for (CollectivityTransaction t : transactions) {
-            Integer memberId = t.getMemberId();
+            String memberId = t.getMemberId();
+
+            if (memberId == null) continue;
+
             paidByMember.put(
                     memberId,
                     paidByMember.getOrDefault(memberId, 0.0) + t.getAmount()
             );
         }
 
+        double expected = calculateExpected(activeFees, from, to);
+
         List<MemberStatisticsDTO> result = new ArrayList<>();
 
         for (Member m : members) {
 
-            double paid = paidByMember.getOrDefault(m.getId(), 0.0);
-
-            double expected = calculateExpected(activeFees, from, to);
+            String key = "C" + collectivityId + "-M" + m.getId();
+            double paid = paidByMember.getOrDefault(key, 0.0);
 
             MemberStatisticsDTO dto = new MemberStatisticsDTO();
             dto.setMemberId(m.getId());
             dto.setName(m.getFirstName());
             dto.setTotalPaid(paid);
-            dto.setTotalUnpaid(expected - paid);
+            dto.setTotalUnpaid(Math.max(0, expected - paid));
 
             result.add(dto);
         }

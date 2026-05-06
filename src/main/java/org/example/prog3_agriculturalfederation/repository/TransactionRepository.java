@@ -18,21 +18,20 @@ public class TransactionRepository {
 
         String sql = """
             INSERT INTO collectivity_transaction
-            (id_transaction, amount, payment_mode, creation_date,
-             account_id, member_id, collectivity_id)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+                                        (amount, payment_mode, creation_date,
+                                         account_id, member_id, collectivity_id)
+                                        VALUES (?, ?, ?, ?, ?, ?)
         """;
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, tx.getId());
-            ps.setDouble(2, tx.getAmount());
-            ps.setString(3, tx.getPaymentMode().name());
-            ps.setDate(4, Date.valueOf(tx.getCreationDate()));
-            ps.setInt(5, tx.getAccountId());
-            ps.setInt(6, tx.getMemberId());
-            ps.setInt(7, tx.getCollectivityId());
+            ps.setDouble(1, tx.getAmount());
+            ps.setString(2, tx.getPaymentMode().name());
+            ps.setDate(3, Date.valueOf(tx.getCreationDate()));
+            ps.setInt(4, tx.getAccountId());
+            ps.setString(5, tx.getMemberId());
+            ps.setInt(6, tx.getCollectivityId());
 
             ps.executeUpdate();
 
@@ -73,6 +72,7 @@ public class TransactionRepository {
                 );
                 tx.setCreationDate(rs.getDate("creation_date").toLocalDate());
                 tx.setCollectivityId(rs.getInt("collectivity_id"));
+                tx.setMemberId(rs.getString("member_id"));
 
                 list.add(tx);
             }

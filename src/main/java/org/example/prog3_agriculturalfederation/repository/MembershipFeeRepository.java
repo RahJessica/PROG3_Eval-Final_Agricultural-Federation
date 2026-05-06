@@ -4,6 +4,7 @@ import org.example.prog3_agriculturalfederation.config.DatabaseConnection;
 import org.example.prog3_agriculturalfederation.dto.CollectivityTransactionDTO;
 import org.example.prog3_agriculturalfederation.entity.MembershipFee;
 import org.example.prog3_agriculturalfederation.entity.enums.Frequency;
+import org.example.prog3_agriculturalfederation.entity.enums.Status;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -35,6 +36,9 @@ public class MembershipFeeRepository {
                 );
                 fee.setEligibleFrom(
                         rs.getDate("eligible").toLocalDate()
+                );
+                fee.setStatus(
+                        Status.valueOf(rs.getString("status"))
                 );
 
                 return fee;
@@ -71,6 +75,7 @@ public class MembershipFeeRepository {
                 if (rs.getDate("eligible") != null) {
                     fee.setEligibleFrom(rs.getDate("eligible").toLocalDate());
                 }
+                fee.setStatus(Status.valueOf(rs.getString("status")));
                 fees.add(fee);
             }
 
@@ -141,6 +146,7 @@ public class MembershipFeeRepository {
                 }
 
                 fee.setCollectivityId(rs.getInt("id_collectivite"));
+                fee.setStatus(Status.valueOf(rs.getString("status")));
 
                 fees.add(fee);
             }

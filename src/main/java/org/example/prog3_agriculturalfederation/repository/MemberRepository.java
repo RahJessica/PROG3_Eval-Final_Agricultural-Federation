@@ -146,6 +146,7 @@ public class MemberRepository {
                 m.setLastName(rs.getString("nom_membre"));
                 m.setEmail(rs.getString("email"));
                 m.setPhoneNumber(rs.getString("telephone"));
+                m.setCollectivityId(rs.getInt("id_collectivite"));
                 return m;
             }
 
@@ -176,6 +177,7 @@ public class MemberRepository {
                 m.setLastName(rs.getString("nom_membre"));
                 m.setEmail(rs.getString("email"));
                 m.setPhoneNumber(rs.getString("telephone"));
+                m.setCollectivityId(rs.getInt("id_collectivite"));
 
                 members.add(m);
             }
