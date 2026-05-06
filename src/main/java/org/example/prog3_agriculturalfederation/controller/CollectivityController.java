@@ -29,7 +29,7 @@ import java.util.List;
 
     @PutMapping("/{id}/informations")
     public ResponseEntity<CollectivityDTO> updateInformations(
-            @PathVariable String id,
+            @PathVariable Integer id,
             @RequestBody CollectivityInformationDTO request
     ) {
         return ResponseEntity.ok(
@@ -39,7 +39,7 @@ import java.util.List;
 
     @PostMapping("/{id}/membershipFees")
     public ResponseEntity<List<MembershipFeeDTO>> createMembershipFees(
-            @PathVariable String id,
+            @PathVariable Integer id,
             @RequestBody List<CreateMembershipFeeDTO> request
     ) {
         return ResponseEntity.ok(
@@ -49,7 +49,7 @@ import java.util.List;
 
     @GetMapping("/{id}/membershipFees")
     public ResponseEntity<List<MembershipFeeDTO>> getMembershipFees(
-            @PathVariable String id
+            @PathVariable Integer id
     ) {
         return ResponseEntity.ok(
                 service.getMembershipFees(id)
@@ -58,7 +58,7 @@ import java.util.List;
 
     @GetMapping("/{id}/transactions")
     public ResponseEntity<List<CollectivityTransactionDTO>> getTransactions(
-            @PathVariable String id,
+            @PathVariable Integer id,
             @RequestParam String from,
             @RequestParam String to
     ) {
@@ -68,7 +68,7 @@ import java.util.List;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<CollectivityDTO> getById(@PathVariable String id) {
+    public ResponseEntity<CollectivityDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.getCollectivityById(id));
     }
 }

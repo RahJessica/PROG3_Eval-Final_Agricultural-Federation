@@ -3,7 +3,7 @@ package org.example.prog3_agriculturalfederation.dto;
 public class RefereeDTO {
     private String memberId;
     private String relationship;
-    private String collectivityId;
+    private Integer collectivityId;
 
     public String getMemberId() {
         return memberId;
@@ -21,11 +21,11 @@ public class RefereeDTO {
         this.relationship = relationship;
     }
 
-    public String getCollectivityId() {
+    public Integer getCollectivityId() {
         return collectivityId;
     }
 
-    public void setCollectivityId(String collectivityId) {
+    public void setCollectivityId(Integer collectivityId) {
         this.collectivityId = collectivityId;
     }
 }

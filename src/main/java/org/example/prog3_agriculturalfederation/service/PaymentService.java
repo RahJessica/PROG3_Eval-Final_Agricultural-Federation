@@ -33,7 +33,7 @@ public class PaymentService {
         this.transactionRepo = transactionRepo;
     }
 
-    public List<MemberPaymentDTO> createPayments(String memberId,
+    public List<MemberPaymentDTO> createPayments(Integer memberId,
                                                  List<CreateMemberPaymentDTO> dtos) {
 
         Member member = memberRepo.findById(memberId);
@@ -59,7 +59,7 @@ public class PaymentService {
             payment.setAmount(dto.getAmount());
             payment.setPaymentMode(dto.getPaymentMode());
             payment.setMembershipFeeId(fee.getId());
-            payment.setMemberId(memberId);
+            payment.setMemberId(String.valueOf(memberId));
             payment.setAccountId(dto.getAccountCreditedIdentifier());
             payment.setCreationDate(LocalDate.now());
 
@@ -71,7 +71,7 @@ public class PaymentService {
             transaction.setPaymentMode(dto.getPaymentMode());
             transaction.setCreationDate(LocalDate.now());
             transaction.setAccountId(dto.getAccountCreditedIdentifier());
-            transaction.setMemberId(memberId);
+            transaction.setMemberId(String.valueOf(memberId));
 
             transactionRepo.save(transaction);
 

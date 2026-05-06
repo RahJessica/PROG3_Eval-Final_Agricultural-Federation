@@ -18,18 +18,18 @@ public class CollectivityRepository {
     }
 
     public void saveAll(List<Collectivity> collectivities) {
-        String sql = "INSERT INTO collectivite (id_collectivite, nom_collectivite, ville, specialite, creation_date, autorisation, numero) VALUES (?, ?)";
+        String sql = "INSERT INTO collectivite (nom_collectivite, ville, specialite, creation_date, autorisation, numero)\n" +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
             for (Collectivity c : collectivities) {
-                ps.setInt(1, c.getIdCollectivity());
-                ps.setString(2, c.getNameCollectivity());
-                ps.setString(3, c.getTown());
-                ps.setString(4, c.getSpeciality());
-                ps.setDate(5, Date.valueOf(c.getCreationDate()));
-                ps.setBoolean(6, c.getAutorisation());
-                ps.setString(7, c.getNumero());
+                ps.setString(1, c.getNameCollectivity());
+                ps.setString(2, c.getTown());
+                ps.setString(3, c.getSpeciality());
+                ps.setDate(4, Date.valueOf(c.getCreationDate()));
+                ps.setBoolean(5, c.getAutorisation());
+                ps.setString(6, c.getNumero());
                 ps.addBatch();
             }
 
@@ -40,13 +40,13 @@ public class CollectivityRepository {
         }
     }
 
-    public Collectivity findById(String id) {
+    public Collectivity findById(Integer id) {
 
         String sql = "SELECT id_collectivite, ville FROM collectivite WHERE id_collectivite = ?";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
 
-            ps.setString(1, id);
+            ps.setInt(1, id);
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {

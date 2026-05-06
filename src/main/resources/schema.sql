@@ -64,24 +64,24 @@ CREATE TABLE compte (
                                 REFERENCES member(id_membre)
 );
 
--- CREATE TABLE financial_account (
---                                    id_account serial PRIMARY KEY,
---                                    collectivity_id int NOT NULL,
---                                    type VARCHAR NOT NULL, -- CASH, BANK, MOBILE
---                                    balance NUMERIC NOT NULL,
---
---     -- Bank
---                                    holder_name VARCHAR,
---                                    bank_name VARCHAR,
---                                    bank_code VARCHAR,
---                                    branch_code VARCHAR,
---                                    account_number VARCHAR,
---                                    rib_key VARCHAR,
---
---     -- Mobile
---                                    mobile_service VARCHAR,
---                                    mobile_number VARCHAR
--- );
+CREATE TABLE financial_account (
+                                   id_account serial PRIMARY KEY,
+                                   collectivity_id int NOT NULL,
+                                   type VARCHAR NOT NULL, -- CASH, BANK, MOBILE
+                                   balance NUMERIC NOT NULL,
+
+    -- Bank
+                                   holder_name VARCHAR,
+                                   bank_name VARCHAR,
+                                   bank_code VARCHAR,
+                                   branch_code VARCHAR,
+                                   account_number VARCHAR,
+                                   rib_key VARCHAR,
+
+    -- Mobile
+                                   mobile_service VARCHAR,
+                                   mobile_number VARCHAR
+);
 
 CREATE TABLE cotisation (
                             id_cotisation SERIAL PRIMARY KEY,

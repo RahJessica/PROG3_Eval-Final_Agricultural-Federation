@@ -41,7 +41,7 @@ public class TransactionRepository {
         }
     }
 
-    public List<CollectivityTransaction> findBetweenDates(String collectivityId,
+    public List<CollectivityTransaction> findBetweenDates(Integer collectivityId,
                                                           LocalDate from,
                                                           LocalDate to) {
 
@@ -57,7 +57,7 @@ public class TransactionRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, collectivityId);
+            ps.setInt(1, collectivityId);
             ps.setDate(2, Date.valueOf(from));
             ps.setDate(3, Date.valueOf(to));
 

@@ -74,7 +74,7 @@ public class CollectivityService {
         return dto;
     }
 
-    public CollectivityDTO updateCollectivityInformation(String id,
+    public CollectivityDTO updateCollectivityInformation(Integer id,
                                                          CollectivityInformationDTO request) {
 
         Collectivity collectivity = collectivityRepository.findById(id);
@@ -97,7 +97,7 @@ public class CollectivityService {
         return toDTO(collectivity);
     }
 
-    public List<MembershipFeeDTO> createMembershipFees(String collectivityId,
+    public List<MembershipFeeDTO> createMembershipFees(Integer collectivityId,
                                                        List<CreateMembershipFeeDTO> request) {
 
         Collectivity collectivity = collectivityRepository.findById(collectivityId);
@@ -129,7 +129,7 @@ public class CollectivityService {
         return fees.stream().map(this::toFeeDTO).toList();
     }
 
-    public List<MembershipFeeDTO> getMembershipFees(String collectivityId) {
+    public List<MembershipFeeDTO> getMembershipFees(Integer collectivityId) {
 
         if (collectivityRepository.findById(collectivityId) == null) {
             throw new RuntimeException("Collectivity not found");
@@ -141,7 +141,7 @@ public class CollectivityService {
                 .toList();
     }
 
-    public List<CollectivityTransactionDTO> getTransactions(String collectivityId,
+    public List<CollectivityTransactionDTO> getTransactions(Integer collectivityId,
                                                             String from,
                                                             String to) {
 
@@ -184,7 +184,7 @@ public class CollectivityService {
         return dto;
     }
 
-    public List<CollectivityTransactionDTO> getTransactions(String collectivityId,
+    public List<CollectivityTransactionDTO> getTransactions(Integer collectivityId,
                                                             LocalDate from,
                                                             LocalDate to) {
 
@@ -202,7 +202,7 @@ public class CollectivityService {
 
     }
 
-    public CollectivityDTO getCollectivityById(String id) {
+    public CollectivityDTO getCollectivityById(Integer id) {
 
         Collectivity collectivity = collectivityRepository.findById(id);
 

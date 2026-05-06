@@ -128,14 +128,14 @@ public class MemberRepository {
         return members;
     }
 
-    public Member findById(String id) {
+    public Member findById(Integer id) {
 
         String sql = "SELECT id_membre, prenom_membre, nom_membre, email, telephone FROM membre WHERE id_member = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setInt(1, Integer.parseInt(id));
+            ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
 
@@ -156,7 +156,7 @@ public class MemberRepository {
         }
     }
 
-    public List<Member> findByCollectivityId(int collectivityId) {
+    public List<Member> findByCollectivityId(Integer collectivityId) {
 
         List<Member> members = new ArrayList<>();
 
