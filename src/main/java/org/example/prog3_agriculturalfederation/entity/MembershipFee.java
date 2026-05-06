@@ -12,7 +12,7 @@ public class MembershipFee {
     private double amount;
     private String label;
     private ActivityStatus status;
-    private String collectivityId;
+    private Integer collectivityId;
 
     public String getId() {
         return id;
@@ -62,11 +62,11 @@ public class MembershipFee {
         this.status = status;
     }
 
-    public String getCollectivityId() {
+    public Integer getCollectivityId() {
         return collectivityId;
     }
 
-    public void setCollectivityId(String collectivityId) {
+    public void setCollectivityId(Integer collectivityId) {
         this.collectivityId = collectivityId;
     }
 }

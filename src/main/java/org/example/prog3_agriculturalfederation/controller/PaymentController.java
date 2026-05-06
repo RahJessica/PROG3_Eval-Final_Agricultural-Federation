@@ -21,7 +21,7 @@ public class PaymentController {
 
     @PostMapping("/{id}/payments")
     public ResponseEntity<List<MemberPaymentDTO>> createPayments(
-            @PathVariable String id,
+            @PathVariable Integer id,
             @RequestBody List<CreateMemberPaymentDTO> dtos) {
 
         return ResponseEntity.status(201)

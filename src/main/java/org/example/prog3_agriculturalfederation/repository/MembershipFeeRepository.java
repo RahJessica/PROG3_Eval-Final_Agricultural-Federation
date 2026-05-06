@@ -3,6 +3,7 @@ package org.example.prog3_agriculturalfederation.repository;
 import org.example.prog3_agriculturalfederation.config.DatabaseConnection;
 import org.example.prog3_agriculturalfederation.dto.CollectivityTransactionDTO;
 import org.example.prog3_agriculturalfederation.entity.MembershipFee;
+import org.example.prog3_agriculturalfederation.entity.enums.Frequency;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -13,27 +14,27 @@ import java.util.List;
 
 @Repository
 public class MembershipFeeRepository {
-    public MembershipFee findById(String id) {
+    public MembershipFee findById(Integer id) {
 
-        String sql = "SELECT * FROM membership_fee WHERE id_fee = ?";
+        String sql = "SELECT * FROM cotisation WHERE id_cotisation = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, id);
+            ps.setInt(1, id);
 
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
                 MembershipFee fee = new MembershipFee();
-                fee.setId(rs.getString("id_fee"));
-                fee.setAmount(rs.getDouble("amount"));
-                fee.setLabel(rs.getString("label"));
+                fee.setId(rs.getString("id_cotisation"));
+                fee.setAmount(rs.getDouble("montant"));
                 fee.setFrequency(
-                        Enum.valueOf(org.example.prog3_agriculturalfederation.entity.enums.Frequency.class,
-                                rs.getString("frequency"))
+                        Frequency.valueOf(rs.getString("frequency"))
                 );
-                fee.setEligibleFrom(rs.getDate("eligible_from").toLocalDate());
+                fee.setEligibleFrom(
+                        rs.getDate("eligible").toLocalDate()
+                );
 
                 return fee;
             }
@@ -45,24 +46,30 @@ public class MembershipFeeRepository {
         }
     }
 
-    public List<MembershipFee> findAllByCollectivity(String collectivityId) {
+    public List<MembershipFee> findAllByCollectivity(Integer collectivityId) {
 
         List<MembershipFee> fees = new ArrayList<>();
 
-        String sql = "SELECT * FROM membership_fee WHERE collectivity_id = ?";
+        String sql = "SELECT * FROM cotisation WHERE id_collectivite = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, collectivityId);
+            ps.setInt(1, collectivityId);
 
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
                 MembershipFee fee = new MembershipFee();
-                fee.setId(rs.getString("id_fee"));
-                fee.setAmount(rs.getDouble("amount"));
-                fee.setLabel(rs.getString("label"));
+                fee.setId(rs.getString("id_cotisation"));
+                fee.setAmount(rs.getDouble("montant"));
+                String freq = rs.getString("frequency");
+                if (freq != null) {
+                    fee.setFrequency(Frequency.valueOf(freq));
+                }
+                if (rs.getDate("eligible") != null) {
+                    fee.setEligibleFrom(rs.getDate("eligible").toLocalDate());
+                }
                 fees.add(fee);
             }
 
@@ -77,13 +84,11 @@ public class MembershipFeeRepository {
 
         String sql = """
         INSERT INTO cotisation (
-            id_cotisation,
             montant,
-            frequence,
-            libelle,
-            date_eligibilite,
+            frequency,
+            eligible,
             id_collectivite
-        ) VALUES (?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?)
     """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -91,12 +96,10 @@ public class MembershipFeeRepository {
 
             for (MembershipFee fee : fees) {
 
-                ps.setString(1, fee.getId());
-                ps.setDouble(2, fee.getAmount());
-                ps.setString(3, fee.getFrequency().name()); // enum → string
-                ps.setString(4, fee.getLabel());
-                ps.setDate(5, java.sql.Date.valueOf(fee.getEligibleFrom()));
-                ps.setString(6, fee.getCollectivityId());
+                                ps.setDouble(2, fee.getAmount());
+                ps.setString(3, fee.getFrequency().name());
+                ps.setDate(4, java.sql.Date.valueOf(fee.getEligibleFrom()));
+                ps.setInt(5, fee.getCollectivityId());
 
                 ps.addBatch();
             }
