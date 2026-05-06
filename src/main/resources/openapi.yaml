@@ -39,7 +39,7 @@ paths:
           description: Member not found.
   '/collectivites/{id}':
     get:
-      summary: Retrieve a collectivity by its identifer
+      summary: Retrieve a collectivity by its identifier
       parameters:
         - in: path
           name: id

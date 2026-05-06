@@ -7,6 +7,7 @@ import org.example.prog3_agriculturalfederation.entity.enums.Frequency;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -96,10 +97,10 @@ public class MembershipFeeRepository {
 
             for (MembershipFee fee : fees) {
 
-                                ps.setDouble(2, fee.getAmount());
-                ps.setString(3, fee.getFrequency().name());
-                ps.setDate(4, java.sql.Date.valueOf(fee.getEligibleFrom()));
-                ps.setInt(5, fee.getCollectivityId());
+                ps.setDouble(1, fee.getAmount());
+                ps.setObject(2, fee.getFrequency().name(), java.sql.Types.OTHER);
+                ps.setDate(3, Date.valueOf(fee.getEligibleFrom()));
+                ps.setInt(4, fee.getCollectivityId());
 
                 ps.addBatch();
             }
