@@ -97,7 +97,6 @@ import java.util.List;
 
     @GetMapping("/statistics")
     public ResponseEntity<?> getStats(
-            @RequestParam Integer id,
             @RequestParam String from,
             @RequestParam String to
     ) {
@@ -106,7 +105,7 @@ import java.util.List;
             LocalDate toDate = LocalDate.parse(to);
 
             return ResponseEntity.ok(
-                    service.getOverallStatistics(id, fromDate, toDate)
+                    service.getOverallStatistics(fromDate, toDate)
             );
 
         } catch (DateTimeParseException e) {

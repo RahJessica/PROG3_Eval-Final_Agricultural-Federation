@@ -1,11 +1,14 @@
 package org.example.prog3_agriculturalfederation.repository;
 
+import org.springframework.stereotype.Repository;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
+@Repository
 public class CollectivityStatisticsRepository {
     private final Connection connection;
 
@@ -17,7 +20,7 @@ public class CollectivityStatisticsRepository {
 
         String sql = """
             SELECT COUNT(*) 
-            FROM member 
+            FROM membre 
             WHERE id_collectivite = ?
         """;
 
@@ -33,9 +36,9 @@ public class CollectivityStatisticsRepository {
 
         String sql = """
             SELECT COUNT(*) 
-            FROM member 
+            FROM membre 
             WHERE id_collectivite = ?
-            AND creation_date BETWEEN ? AND ?
+            AND date_adhesion BETWEEN ? AND ?
         """;
 
         PreparedStatement ps = connection.prepareStatement(sql);
@@ -48,22 +51,29 @@ public class CollectivityStatisticsRepository {
         return rs.getInt(1);
     }
 
-    public int countUpToDateMembers(int collectivityId, LocalDate from, LocalDate to) throws SQLException {
+    public int getComplianceRate(int collectivityId, LocalDate from, LocalDate to) throws SQLException {
 
         String sql = """
-            SELECT COUNT(DISTINCT m.id_membre)
-            FROM member m
-            LEFT JOIN collectivity_transaction t
-                ON t.member_id = m.id_membre
-                AND t.creation_date BETWEEN ? AND ?
-            WHERE m.id_collectivite = ?
-            GROUP BY m.id_membre
-            HAVING COALESCE(SUM(t.amount), 0) >= (
-                SELECT COALESCE(SUM(cf.amount), 0)
-                FROM membership_fee cf
-                WHERE cf.id_collectivite = ?
-                  AND cf.status = 'ACTIVE'
-            )
+             SELECT
+                         CASE
+                             WHEN COUNT(*) = 0 THEN 0
+                             ELSE (COUNT(*) FILTER (WHERE paid >= expected) * 100.0 / COUNT(*))
+                         END AS rate
+                     FROM (
+                         SELECT
+                             m.id_membre,
+                             COALESCE(SUM(t.montant), 0) AS paid,
+                             COALESCE(SUM(c.montant), 0) AS expected
+                         FROM membre m
+                         LEFT JOIN collectivity_transaction t
+                             ON t.id_membre = m.id_membre
+                             AND t.date_creation BETWEEN ? AND ?
+                         LEFT JOIN cotisation c
+                             ON c.id_collectivite = m.id_collectivite
+                             AND c.status = 'ACTIVE'
+                         WHERE m.id_collectivite = ?
+                         GROUP BY m.id_membre
+                     ) stats
         """;
 
         PreparedStatement ps = connection.prepareStatement(sql);
@@ -71,16 +81,14 @@ public class CollectivityStatisticsRepository {
         ps.setDate(1, java.sql.Date.valueOf(from));
         ps.setDate(2, java.sql.Date.valueOf(to));
         ps.setInt(3, collectivityId);
-        ps.setInt(4, collectivityId);
 
         ResultSet rs = ps.executeQuery();
 
-        int count = 0;
-        while (rs.next()) {
-            count++;
+        if(rs.next()) {
+            return (int) rs.getDouble("rate");
         }
 
-        return count;
+        return 0;
     }
 }
 

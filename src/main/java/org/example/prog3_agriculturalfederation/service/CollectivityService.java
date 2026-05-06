@@ -3,10 +3,7 @@ package org.example.prog3_agriculturalfederation.service;
 import org.example.prog3_agriculturalfederation.dto.*;
 import org.example.prog3_agriculturalfederation.entity.*;
 import org.example.prog3_agriculturalfederation.entity.enums.Status;
-import org.example.prog3_agriculturalfederation.repository.CollectivityRepository;
-import org.example.prog3_agriculturalfederation.repository.MemberRepository;
-import org.example.prog3_agriculturalfederation.repository.MembershipFeeRepository;
-import org.example.prog3_agriculturalfederation.repository.TransactionRepository;
+import org.example.prog3_agriculturalfederation.repository.*;
 import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
@@ -21,15 +18,18 @@ public class CollectivityService {
     private final CollectivityRepository collectivityRepository;
     private final MembershipFeeRepository feeRepository;
     private final TransactionRepository transactionRepository;
+    private final CollectivityStatisticsRepository collectivityStatisticsRepository;
 
     public CollectivityService(MemberRepository memberRepository,
                                CollectivityRepository collectivityRepository,
                                MembershipFeeRepository feeRepository,
-                               TransactionRepository transactionRepository) {
+                               TransactionRepository transactionRepository,
+                               CollectivityStatisticsRepository collectivityStatisticsRepository) {
         this.memberRepository = memberRepository;
         this.collectivityRepository = collectivityRepository;
         this.feeRepository = feeRepository;
         this.transactionRepository = transactionRepository;
+        this.collectivityStatisticsRepository = collectivityStatisticsRepository;
     }
 
     public List<CollectivityDTO> createCollectivities(List<CreateCollectivityDTO> requests) {
@@ -320,28 +320,29 @@ public class CollectivityService {
         return total;
     }
 
-    public CollectivityOverallStatisticsDTO getOverallStatistics(Integer id, LocalDate fromDate, LocalDate toDate) {
+    public List<CollectivityOverallStatisticsDTO> getOverallStatistics( LocalDate from, LocalDate to) {
         try {
+            List<Collectivity> collectivities = collectivityRepository.findAll();
 
-            int total = statsRepository.countMembers(collectivityId);
+            List<CollectivityOverallStatisticsDTO> result = new ArrayList<>();
 
-            int newMembers = statsRepository.countNewMembers(collectivityId, from, to);
+            for (Collectivity c : collectivities) {
 
-            int upToDate = statsRepository.countUpToDateMembers(collectivityId, from, to);
+                CollectivityOverallStatisticsDTO dto = new CollectivityOverallStatisticsDTO();
 
-            double percentage = total == 0
-                    ? 0
-                    : (upToDate * 100.0 / total);
+                dto.id = c.getIdCollectivity();
 
-            CollectivityOverallStatisticsDTO dto = new CollectivityOverallStatisticsDTO();
-            dto.totalMembers = total;
-            dto.membersUpToDate = upToDate;
-            dto.newMembers = newMembers;
-            dto.percentageUpToDate = percentage;
+                dto.complianceRate =
+                        collectivityStatisticsRepository.getComplianceRate(c.getIdCollectivity(), from, to);
 
-            return dto;
-        }catch(SQLException e){
-            throw new RuntimeException("Error computing statistics", e);
+                dto.newMembers =
+                        collectivityStatisticsRepository.countNewMembers(c.getIdCollectivity(), from, to);
+
+                result.add(dto);
+            }
+            return result;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
