@@ -224,4 +224,13 @@ public class CollectivityService {
 
         return dto;
     }
+
+    public List<CollectivityDTO> getAllCollectivities() {
+
+        List<Collectivity> collectivities = collectivityRepository.findAll();
+
+        return collectivities.stream()
+                .map(this::toDTO)
+                .toList();
+    }
 }
