@@ -14,6 +14,7 @@ CREATE TABLE federation (
                             id_federation SERIAL PRIMARY KEY,
                             nom_federation VARCHAR(50)
 );
+d
 
 CREATE TABLE collectivite (
                               id_collectivite SERIAL PRIMARY KEY,
@@ -46,42 +47,25 @@ CREATE TABLE member (
                                 REFERENCES collectivite(id_collectivite)
 );
 
-CREATE TABLE compte (
-                        id_compte SERIAL PRIMARY KEY,
-                        type_compte VARCHAR(30),
-                        solde_compte DECIMAL(15,2),
-                        id_federation INT,
-                        id_collectivite INT,
-                        id_membre INT,
-                        CONSTRAINT fk_compte_federation
-                            FOREIGN KEY (id_federation)
-                                REFERENCES federation(id_federation),
-                        CONSTRAINT fk_compte_collectivite
-                            FOREIGN KEY (id_collectivite)
-                                REFERENCES collectivite(id_collectivite),
-                        CONSTRAINT fk_compte_membre
-                            FOREIGN KEY (id_membre)
-                                REFERENCES member(id_membre)
-);
 
--- CREATE TABLE financial_account (
---                                    id_account serial PRIMARY KEY,
---                                    collectivity_id int NOT NULL,
---                                    type VARCHAR NOT NULL, -- CASH, BANK, MOBILE
---                                    balance NUMERIC NOT NULL,
---
---     -- Bank
---                                    holder_name VARCHAR,
---                                    bank_name VARCHAR,
---                                    bank_code VARCHAR,
---                                    branch_code VARCHAR,
---                                    account_number VARCHAR,
---                                    rib_key VARCHAR,
---
---     -- Mobile
---                                    mobile_service VARCHAR,
---                                    mobile_number VARCHAR
--- );
+CREATE TABLE financial_account (
+                                   id_account serial PRIMARY KEY,
+                                   collectivity_id int NOT NULL,
+                                   type VARCHAR NOT NULL, -- CASH, BANK, MOBILE
+                                   balance NUMERIC NOT NULL,
+
+    -- Bank
+                                   holder_name VARCHAR,
+                                   bank_name VARCHAR,
+                                   bank_code VARCHAR,
+                                   branch_code VARCHAR,
+                                   account_number VARCHAR,
+                                   rib_key VARCHAR,
+
+    -- Mobile
+                                   mobile_service VARCHAR,
+                                   mobile_number VARCHAR
+);
 
 CREATE TABLE cotisation (
                             id_cotisation SERIAL PRIMARY KEY,
@@ -157,3 +141,60 @@ CREATE TABLE affecter (
                               FOREIGN KEY (id_mandat)
                                   REFERENCES mandat(id_mandat)
 );
+
+CREATE TABLE collectivity_transaction (
+                                          id_transaction SERIAL PRIMARY KEY,
+                                          id_collectivite INT NOT NULL,
+                                          id_membre INT NOT NULL,
+                                          id_account INT NOT NULL,
+                                          montant NUMERIC NOT NULL,
+                                          mode_paiement VARCHAR(50),
+                                          date_creation DATE,
+
+                                          CONSTRAINT fk_transaction_collectivite
+                                              FOREIGN KEY (id_collectivite)
+                                                  REFERENCES collectivite(id_collectivite),
+
+                                          CONSTRAINT fk_transaction_membre
+                                              FOREIGN KEY (id_membre)
+                                                  REFERENCES membre(id_membre),
+
+                                          CONSTRAINT fk_transaction_account
+                                              FOREIGN KEY (id_account)
+                                                  REFERENCES financial_account(id_account)
+);
+
+INSERT INTO collectivity_transaction (
+    id_collectivite,
+    id_membre,
+    id_account,
+    montant,
+    mode_paiement,
+    date_creation
+) VALUES
+      (3, 1, 1, 100000, 'CASH', '2026-01-01'),
+      (3, 2, 1, 100000, 'CASH', '2026-01-01'),
+      (3, 3, 1, 100000, 'CASH', '2026-01-01'),
+      (3, 4, 1, 100000, 'CASH', '2026-01-01'),
+      (3, 5, 1, 100000, 'CASH', '2026-01-01'),
+      (3, 6, 1, 100000, 'CASH', '2026-01-01'),
+      (3, 7, 1, 60000,  'CASH', '2026-01-01'),
+      (3, 8, 1, 90000,  'CASH', '2026-01-01');
+
+INSERT INTO collectivity_transaction (
+    id_collectivite,
+    id_membre,
+    id_account,
+    montant,
+    mode_paiement,
+    date_creation
+) VALUES
+(2, 9,  3, 60000,  'CASH', '2026-01-01'),
+(2, 10, 3, 90000,  'CASH', '2026-01-01'),
+(2, 11, 3, 100000, 'CASH', '2026-01-01'),
+(2, 12, 3, 100000, 'CASH', '2026-01-01'),
+(2, 13, 3, 100000, 'CASH', '2026-01-01'),
+(2, 14, 3, 100000, 'CASH', '2026-01-01'),
+
+(2, 15, 4, 40000,  'MOBILE', '2026-01-01'),
+(2, 16, 4, 60000,  'MOBILE', '2026-01-01');
