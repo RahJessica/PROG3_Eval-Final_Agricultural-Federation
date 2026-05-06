@@ -72,11 +72,12 @@ public class PaymentService {
             transaction.setPaymentMode(dto.getPaymentMode());
             transaction.setCreationDate(LocalDate.now());
             transaction.setAccountId(dto.getAccountCreditedIdentifier());
-            transaction.setMemberId(memberId);
+            transaction.setMemberId("C1-M" + memberId);
+            transaction.setCollectivityId(fee.getCollectivityId());
 
             transactionRepo.save(transaction);
 
-            handleFederationShare(fee, dto.getAmount());
+            handleFederationShare(fee, dto.getAmount(), memberId);
 
             payments.add(payment);
         }
@@ -90,7 +91,7 @@ public class PaymentService {
         return result;
     }
 
-    private void handleFederationShare(MembershipFee fee, double amount) {
+    private void handleFederationShare(MembershipFee fee, double amount, Integer memberId) {
 
         if (fee.getFrequency() == Frequency.MONTHLY ||
                 fee.getFrequency() == Frequency.YEARLY) {
@@ -102,6 +103,8 @@ public class PaymentService {
             federationTx.setAmount(federationAmount);
             federationTx.setPaymentMode(PaymentMode.BANK_TRANSFER);
             federationTx.setCreationDate(LocalDate.now());
+            federationTx.setCollectivityId(fee.getCollectivityId());
+            federationTx.setMemberId("C1-M" + memberId);
 
             transactionRepo.save(federationTx);
         }

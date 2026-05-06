@@ -34,6 +34,9 @@ public class MembershipFeeRepository {
                 fee.setEligibleFrom(
                         rs.getDate("eligible").toLocalDate()
                 );
+                fee.setStatus(
+                        Status.valueOf(rs.getString("status"))
+                );
 
                 return fee;
             }
@@ -70,6 +73,7 @@ public class MembershipFeeRepository {
                 if (rs.getDate("eligible") != null) {
                     fee.setEligibleFrom(rs.getDate("eligible").toLocalDate());
                 }
+                fee.setStatus(Status.valueOf(rs.getString("status")));
                 fees.add(fee);
             }
 
@@ -142,6 +146,7 @@ public class MembershipFeeRepository {
                 }
 
                 fee.setCollectivityId(rs.getInt("id_collectivite"));
+                fee.setStatus(Status.valueOf(rs.getString("status")));
 
                 fees.add(fee);
             }

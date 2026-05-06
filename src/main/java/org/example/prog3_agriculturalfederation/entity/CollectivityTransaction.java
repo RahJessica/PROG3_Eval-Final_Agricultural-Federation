@@ -10,7 +10,7 @@ public class CollectivityTransaction {
     private double amount;
     private PaymentMode paymentMode;
     private Integer accountId;
-    private Integer memberId;
+    private String memberId;
     private Integer collectivityId;
 
     public String getId() {
@@ -53,11 +53,11 @@ public class CollectivityTransaction {
         this.accountId = accountId;
     }
 
-    public Integer getMemberId() {
+    public String getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(Integer memberId) {
+    public void setMemberId(String memberId) {
         this.memberId = memberId;
     }
 

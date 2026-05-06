@@ -21,6 +21,7 @@ public class Member {
     private String profession;
     private MemberOccupation occupation;
     public List<RefereeDTO> referees;
+    private Integer collectivityId;
 
     public Member(Integer id, String lastName, String firstName, LocalDate birthDate, Gender gender, String phoneNumber, String email, LocalDate dateAdhesion, String address, String profession, MemberOccupation occupation, List<RefereeDTO> referees) {
         this.id = id;
@@ -135,6 +136,14 @@ public class Member {
 
     public void setReferees(List<RefereeDTO> referees) {
         this.referees = referees;
+    }
+
+    public Integer getCollectivityId() {
+        return collectivityId;
+    }
+
+    public void setCollectivityId(Integer collectivityId) {
+        this.collectivityId = collectivityId;
     }
 
     @Override
