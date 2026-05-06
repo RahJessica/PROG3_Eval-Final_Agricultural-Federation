@@ -3,7 +3,7 @@ package org.example.prog3_agriculturalfederation.entity;
 import org.example.prog3_agriculturalfederation.entity.enums.AccountType;
 
 public class FinancialAccount {
-    private String id;
+    private Integer id;
     private Integer collectivityId;
     private AccountType type;
     private double balance;
@@ -80,11 +80,11 @@ public class FinancialAccount {
         this.holderName = holderName;
     }
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -120,7 +120,7 @@ public class FinancialAccount {
         this.type = type;
     }
 
-    public FinancialAccount(String accountNumber, double balance, String bankCode, String bankName, String branchCode, Integer collectivityId, String holderName, String id, String mobileNumber, String mobileService, String ribKey, AccountType type) {
+    public FinancialAccount(String accountNumber, double balance, String bankCode, String bankName, String branchCode, Integer collectivityId, String holderName, int id, String mobileNumber, String mobileService, String ribKey, AccountType type) {
         this.accountNumber = accountNumber;
         this.balance = balance;
         this.bankCode = bankCode;
