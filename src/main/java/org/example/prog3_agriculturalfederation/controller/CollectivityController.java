@@ -71,4 +71,9 @@ import java.util.List;
     public ResponseEntity<CollectivityDTO> getById(@PathVariable Integer id) {
         return ResponseEntity.ok(service.getCollectivityById(id));
     }
+
+    @GetMapping
+    public ResponseEntity<List<CollectivityDTO>> getAll() {
+        return ResponseEntity.ok(service.getAllCollectivities());
+    }
 }

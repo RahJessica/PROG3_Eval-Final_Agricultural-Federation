@@ -157,4 +157,34 @@ public class CollectivityRepository {
 
         return members;
     }
+
+    public List<Collectivity> findAll() {
+
+        List<Collectivity> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM collectivite";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Collectivity c = new Collectivity();
+                c.setIdCollectivity(rs.getInt("id_collectivite"));
+                c.setNameCollectivity(rs.getString("nom_collectivite"));
+                c.setTown(rs.getString("ville"));
+                c.setSpeciality(rs.getString("specialite"));
+                c.setCreationDate(rs.getDate("creation_date").toLocalDate());
+                c.setAutorisation(rs.getBoolean("autorisation"));
+                c.setNumero(rs.getString("numero"));
+
+                list.add(c);
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error fetching collectivities", e);
+        }
+
+        return list;
+    }
 }
