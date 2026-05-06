@@ -5,17 +5,17 @@ import org.example.prog3_agriculturalfederation.entity.enums.PaymentMode;
 import java.time.LocalDate;
 
 public class MemberPaymentDTO {
-    private String id;
+    private Integer id;
     private Integer amount;
     private PaymentMode paymentMode;
     private FinancialAccountDTO accountCredited;
     private LocalDate creationDate;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

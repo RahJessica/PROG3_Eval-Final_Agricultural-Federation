@@ -5,7 +5,7 @@ import org.example.prog3_agriculturalfederation.entity.enums.PaymentMode;
 public class CreateMemberPaymentDTO {
     private int amount;
     private Integer membershipFeeIdentifier;
-    private String accountCreditedIdentifier;
+    private Integer accountCreditedIdentifier;
     private PaymentMode paymentMode;
 
     public int getAmount() {
@@ -24,11 +24,11 @@ public class CreateMemberPaymentDTO {
         this.membershipFeeIdentifier = membershipFeeIdentifier;
     }
 
-    public String getAccountCreditedIdentifier() {
+    public Integer getAccountCreditedIdentifier() {
         return accountCreditedIdentifier;
     }
 
-    public void setAccountCreditedIdentifier(String accountCreditedIdentifier) {
+    public void setAccountCreditedIdentifier(Integer accountCreditedIdentifier) {
         this.accountCreditedIdentifier = accountCreditedIdentifier;
     }
 

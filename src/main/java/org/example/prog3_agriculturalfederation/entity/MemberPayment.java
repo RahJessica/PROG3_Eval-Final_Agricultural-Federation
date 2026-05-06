@@ -5,19 +5,19 @@ import org.example.prog3_agriculturalfederation.entity.enums.PaymentMode;
 import java.time.LocalDate;
 
 public class MemberPayment {
-    private String id;
+    private Integer id;
     private int amount;
     private PaymentMode paymentMode;
     private String membershipFeeId;
-    private String accountId;
-    private String memberId;
+    private Integer accountId;
+    private Integer memberId;
     private LocalDate creationDate;
 
-    public String getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -45,19 +45,19 @@ public class MemberPayment {
         this.membershipFeeId = membershipFeeId;
     }
 
-    public String getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(Integer accountId) {
         this.accountId = accountId;
     }
 
-    public String getMemberId() {
+    public Integer getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Integer memberId) {
         this.memberId = memberId;
     }
 

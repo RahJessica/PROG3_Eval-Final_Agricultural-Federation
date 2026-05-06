@@ -30,9 +30,9 @@ public class TransactionRepository {
             ps.setDouble(2, tx.getAmount());
             ps.setString(3, tx.getPaymentMode().name());
             ps.setDate(4, Date.valueOf(tx.getCreationDate()));
-            ps.setString(5, tx.getAccountId());
-            ps.setString(6, tx.getMemberId());
-            ps.setString(7, tx.getCollectivityId());
+            ps.setInt(5, tx.getAccountId());
+            ps.setInt(6, tx.getMemberId());
+            ps.setInt(7, tx.getCollectivityId());
 
             ps.executeUpdate();
 
@@ -72,7 +72,7 @@ public class TransactionRepository {
                                 rs.getString("payment_mode"))
                 );
                 tx.setCreationDate(rs.getDate("creation_date").toLocalDate());
-                tx.setCollectivityId(rs.getString("collectivity_id"));
+                tx.setCollectivityId(rs.getInt("collectivity_id"));
 
                 list.add(tx);
             }
