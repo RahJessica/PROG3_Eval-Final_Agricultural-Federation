@@ -7,6 +7,7 @@ import org.example.prog3_agriculturalfederation.service.CollectivityService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -75,5 +76,20 @@ import java.util.List;
     @GetMapping
     public ResponseEntity<List<CollectivityDTO>> getAll() {
         return ResponseEntity.ok(service.getAllCollectivities());
+    }
+
+    @GetMapping("/{id}/statistics")
+    public ResponseEntity<?> getStatistics(
+            @PathVariable Integer id,
+            @RequestParam String from,
+            @RequestParam String to
+    ) {
+        return ResponseEntity.ok(
+                service.getStatistics(
+                        id,
+                        LocalDate.parse(from),
+                        LocalDate.parse(to)
+                )
+        );
     }
 }

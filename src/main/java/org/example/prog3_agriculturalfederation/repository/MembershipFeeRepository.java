@@ -110,4 +110,44 @@ public class MembershipFeeRepository {
             throw new RuntimeException("Error saving membership fees", e);
         }
     }
+
+    public List<MembershipFee> findActiveByCollectivity(Integer collectivityId) {
+
+        List<MembershipFee> fees = new ArrayList<>();
+
+        String sql = "SELECT * FROM cotisation WHERE id_collectivite = ? AND status = 'ACTIVE'";
+
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, collectivityId);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                MembershipFee fee = new MembershipFee();
+
+                fee.setId(rs.getString("id_cotisation"));
+                fee.setAmount(rs.getDouble("montant"));
+
+                String freq = rs.getString("frequency");
+                if (freq != null) {
+                    fee.setFrequency(Frequency.valueOf(freq));
+                }
+
+                if (rs.getDate("eligible") != null) {
+                    fee.setEligibleFrom(rs.getDate("eligible").toLocalDate());
+                }
+
+                fee.setCollectivityId(rs.getInt("id_collectivite"));
+
+                fees.add(fee);
+            }
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error fetching active fees", e);
+        }
+
+        return fees;
+    }
 }

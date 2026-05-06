@@ -9,9 +9,9 @@ public class CollectivityTransaction {
     private LocalDate creationDate;
     private double amount;
     private PaymentMode paymentMode;
-    private String accountId;
-    private String memberId;
-    private String collectivityId;
+    private Integer accountId;
+    private Integer memberId;
+    private Integer collectivityId;
 
     public String getId() {
         return id;
@@ -45,27 +45,27 @@ public class CollectivityTransaction {
         this.paymentMode = paymentMode;
     }
 
-    public String getAccountId() {
+    public Integer getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(String accountId) {
+    public void setAccountId(Integer accountId) {
         this.accountId = accountId;
     }
 
-    public String getMemberId() {
+    public Integer getMemberId() {
         return memberId;
     }
 
-    public void setMemberId(String memberId) {
+    public void setMemberId(Integer memberId) {
         this.memberId = memberId;
     }
 
-    public String getCollectivityId() {
+    public Integer getCollectivityId() {
         return collectivityId;
     }
 
-    public void setCollectivityId(String collectivityId) {
+    public void setCollectivityId(Integer collectivityId) {
         this.collectivityId = collectivityId;
     }
 }

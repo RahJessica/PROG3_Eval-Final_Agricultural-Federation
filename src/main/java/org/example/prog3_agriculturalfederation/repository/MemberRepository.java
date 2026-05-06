@@ -141,7 +141,7 @@ public class MemberRepository {
 
             if (rs.next()) {
                 Member m = new Member();
-                m.setId(rs.getInt("id_member"));
+                m.setId(rs.getInt("id_membre"));
                 m.setFirstName(rs.getString("prenom_membre"));
                 m.setLastName(rs.getString("nom_membre"));
                 m.setEmail(rs.getString("email"));
@@ -160,7 +160,7 @@ public class MemberRepository {
 
         List<Member> members = new ArrayList<>();
 
-        String sql = "SELECT * FROM member WHERE id_collectivite = ?";
+        String sql = "SELECT * FROM membre WHERE id_collectivite = ?";
 
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -171,7 +171,7 @@ public class MemberRepository {
 
             while (rs.next()) {
                 Member m = new Member();
-                m.setId(rs.getInt("id_member"));
+                m.setId(rs.getInt("id_membre"));
                 m.setFirstName(rs.getString("prenom_membre"));
                 m.setLastName(rs.getString("nom_membre"));
                 m.setEmail(rs.getString("email"));

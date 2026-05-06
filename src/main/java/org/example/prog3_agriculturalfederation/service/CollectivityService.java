@@ -2,6 +2,7 @@ package org.example.prog3_agriculturalfederation.service;
 
 import org.example.prog3_agriculturalfederation.dto.*;
 import org.example.prog3_agriculturalfederation.entity.*;
+import org.example.prog3_agriculturalfederation.entity.enums.Status;
 import org.example.prog3_agriculturalfederation.repository.CollectivityRepository;
 import org.example.prog3_agriculturalfederation.repository.MemberRepository;
 import org.example.prog3_agriculturalfederation.repository.MembershipFeeRepository;
@@ -232,5 +233,89 @@ public class CollectivityService {
         return collectivities.stream()
                 .map(this::toDTO)
                 .toList();
+    }
+
+    public List<MemberStatisticsDTO> getStatistics(Integer collectivityId,
+                                                   LocalDate from,
+                                                   LocalDate to) {
+
+        Collectivity c = collectivityRepository.findById(collectivityId);
+        if (c == null) throw new RuntimeException("Collectivity not found");
+
+        List<Member> members = memberRepository.findByCollectivityId(collectivityId);
+
+        List<MembershipFee> activeFees =
+                feeRepository.findAllByCollectivity(collectivityId)
+                        .stream()
+                        .filter(f -> f.getStatus() == Status.ACTIVE)
+                        .toList();
+
+        List<CollectivityTransaction> transactions =
+                transactionRepository.findBetweenDates(collectivityId, from, to);
+
+        Map<Integer, Double> paidByMember = new HashMap<>();
+
+        for (CollectivityTransaction t : transactions) {
+            Integer memberId = t.getMemberId();
+            paidByMember.put(
+                    memberId,
+                    paidByMember.getOrDefault(memberId, 0.0) + t.getAmount()
+            );
+        }
+
+        List<MemberStatisticsDTO> result = new ArrayList<>();
+
+        for (Member m : members) {
+
+            double paid = paidByMember.getOrDefault(m.getId(), 0.0);
+
+            double expected = calculateExpected(activeFees, from, to);
+
+            MemberStatisticsDTO dto = new MemberStatisticsDTO();
+            dto.setMemberId(m.getId());
+            dto.setName(m.getFirstName());
+            dto.setTotalPaid(paid);
+            dto.setTotalUnpaid(expected - paid);
+
+            result.add(dto);
+        }
+
+        return result;
+    }
+
+    private double calculateExpected(List<MembershipFee> fees,
+                                     LocalDate from,
+                                     LocalDate to) {
+
+        double total = 0;
+
+        for (MembershipFee fee : fees) {
+
+            switch (fee.getFrequency()) {
+
+                case WEEKLY:
+                    long weeks = java.time.temporal.ChronoUnit.WEEKS.between(from, to);
+                    total += weeks * fee.getAmount();
+                    break;
+
+                case MONTHLY:
+                    long months = java.time.temporal.ChronoUnit.MONTHS.between(from, to);
+                    total += months * fee.getAmount();
+                    break;
+
+                case YEARLY:
+                    long years = java.time.temporal.ChronoUnit.YEARS.between(from, to);
+                    total += years * fee.getAmount();
+                    break;
+
+                case PUNCTUALLY:
+                    if (!fee.getEligibleFrom().isAfter(to)) {
+                        total += fee.getAmount();
+                    }
+                    break;
+            }
+        }
+
+        return total;
     }
 }

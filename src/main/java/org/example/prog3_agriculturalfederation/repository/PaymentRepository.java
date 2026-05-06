@@ -35,12 +35,12 @@ public class PaymentRepository {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, payment.getId());
+            ps.setInt(1, payment.getId());
             ps.setDouble(2, payment.getAmount());
             ps.setString(3, payment.getPaymentMode().name());
             ps.setString(4, payment.getMembershipFeeId());
-            ps.setString(5, payment.getMemberId());
-            ps.setString(6, payment.getAccountId());
+            ps.setInt(5, payment.getMemberId());
+            ps.setInt(6, payment.getAccountId());
             ps.setDate(7, Date.valueOf(payment.getCreationDate()));
 
             ps.executeUpdate();

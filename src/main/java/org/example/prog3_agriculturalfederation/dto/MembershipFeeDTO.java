@@ -1,7 +1,7 @@
 package org.example.prog3_agriculturalfederation.dto;
 
-import org.example.prog3_agriculturalfederation.entity.enums.ActivityStatus;
 import org.example.prog3_agriculturalfederation.entity.enums.Frequency;
+import org.example.prog3_agriculturalfederation.entity.enums.Status;
 
 import java.time.LocalDate;
 
@@ -11,7 +11,7 @@ public class MembershipFeeDTO {
     private Frequency frequency;
     private Double amount;
     private String label;
-    private ActivityStatus status;
+    private Status status;
 
     public String getId() {
         return id;
@@ -51,13 +51,5 @@ public class MembershipFeeDTO {
 
     public void setLabel(String label) {
         this.label = label;
-    }
-
-    public ActivityStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(ActivityStatus status) {
-        this.status = status;
     }
 }

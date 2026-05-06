@@ -17,16 +17,19 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @Service
 public class PaymentService {
+
     private final MemberRepository memberRepo;
     private final MembershipFeeRepository feeRepo;
     private final PaymentRepository paymentRepo;
     private final TransactionRepository transactionRepo;
 
-    public PaymentService(MemberRepository memberRepo, MembershipFeeRepository feeRepo, PaymentRepository paymentRepo, TransactionRepository transactionRepo) {
+    public PaymentService(MemberRepository memberRepo,
+                          MembershipFeeRepository feeRepo,
+                          PaymentRepository paymentRepo,
+                          TransactionRepository transactionRepo) {
         this.memberRepo = memberRepo;
         this.feeRepo = feeRepo;
         this.paymentRepo = paymentRepo;
@@ -53,29 +56,27 @@ public class PaymentService {
             if (dto.getAmount() <= 0) {
                 throw new RuntimeException("Invalid amount");
             }
-
+            
             MemberPayment payment = new MemberPayment();
-            payment.setId(UUID.randomUUID().toString());
             payment.setAmount(dto.getAmount());
             payment.setPaymentMode(dto.getPaymentMode());
             payment.setMembershipFeeId(fee.getId());
-            payment.setMemberId(String.valueOf(memberId));
+            payment.setMemberId(memberId);
             payment.setAccountId(dto.getAccountCreditedIdentifier());
             payment.setCreationDate(LocalDate.now());
 
             paymentRepo.save(payment);
 
             CollectivityTransaction transaction = new CollectivityTransaction();
-            transaction.setId(UUID.randomUUID().toString());
             transaction.setAmount(dto.getAmount());
             transaction.setPaymentMode(dto.getPaymentMode());
             transaction.setCreationDate(LocalDate.now());
             transaction.setAccountId(dto.getAccountCreditedIdentifier());
-            transaction.setMemberId(String.valueOf(memberId));
+            transaction.setMemberId(memberId);
 
             transactionRepo.save(transaction);
 
-            handleFederationShare(fee, dto.getAmount(), member);
+            handleFederationShare(fee, dto.getAmount());
 
             payments.add(payment);
         }
@@ -89,22 +90,18 @@ public class PaymentService {
         return result;
     }
 
-    private void handleFederationShare(MembershipFee fee, double amount, Member member) {
+    private void handleFederationShare(MembershipFee fee, double amount) {
 
         if (fee.getFrequency() == Frequency.MONTHLY ||
-                fee.getFrequency() == Frequency.ANNUALLY) {
+                fee.getFrequency() == Frequency.YEARLY) {
 
-            double percentage = 0.1; // 10% reversés
-            double federationAmount = amount * percentage;
+            double federationAmount = amount * 0.1;
 
             CollectivityTransaction federationTx = new CollectivityTransaction();
 
-            federationTx.setId(UUID.randomUUID().toString());
             federationTx.setAmount(federationAmount);
             federationTx.setPaymentMode(PaymentMode.BANK_TRANSFER);
             federationTx.setCreationDate(LocalDate.now());
-
-            federationTx.setCollectivityId("FEDERATION");
 
             transactionRepo.save(federationTx);
         }
@@ -113,7 +110,6 @@ public class PaymentService {
     private MemberPaymentDTO toDTO(MemberPayment payment) {
 
         MemberPaymentDTO dto = new MemberPaymentDTO();
-
         dto.setId(payment.getId());
         dto.setAmount(payment.getAmount());
         dto.setPaymentMode(payment.getPaymentMode());
