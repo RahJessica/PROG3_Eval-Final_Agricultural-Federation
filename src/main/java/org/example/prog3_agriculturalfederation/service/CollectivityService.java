@@ -9,6 +9,7 @@ import org.example.prog3_agriculturalfederation.repository.MembershipFeeReposito
 import org.example.prog3_agriculturalfederation.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -317,5 +318,30 @@ public class CollectivityService {
         }
 
         return total;
+    }
+
+    public CollectivityOverallStatisticsDTO getOverallStatistics(Integer id, LocalDate fromDate, LocalDate toDate) {
+        try {
+
+            int total = statsRepository.countMembers(collectivityId);
+
+            int newMembers = statsRepository.countNewMembers(collectivityId, from, to);
+
+            int upToDate = statsRepository.countUpToDateMembers(collectivityId, from, to);
+
+            double percentage = total == 0
+                    ? 0
+                    : (upToDate * 100.0 / total);
+
+            CollectivityOverallStatisticsDTO dto = new CollectivityOverallStatisticsDTO();
+            dto.totalMembers = total;
+            dto.membersUpToDate = upToDate;
+            dto.newMembers = newMembers;
+            dto.percentageUpToDate = percentage;
+
+            return dto;
+        }catch(SQLException e){
+            throw new RuntimeException("Error computing statistics", e);
+        }
     }
 }

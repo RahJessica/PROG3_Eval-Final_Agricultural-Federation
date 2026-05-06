@@ -4,10 +4,12 @@ import org.example.prog3_agriculturalfederation.dto.*;
 import org.example.prog3_agriculturalfederation.entity.Collectivity;
 import org.example.prog3_agriculturalfederation.entity.FinancialAccount;
 import org.example.prog3_agriculturalfederation.service.CollectivityService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -91,5 +93,27 @@ import java.util.List;
                         LocalDate.parse(to)
                 )
         );
+    }
+
+    @GetMapping("/statistics")
+    public ResponseEntity<?> getStats(
+            @RequestParam Integer id,
+            @RequestParam String from,
+            @RequestParam String to
+    ) {
+        try {
+            LocalDate fromDate = LocalDate.parse(from);
+            LocalDate toDate = LocalDate.parse(to);
+
+            return ResponseEntity.ok(
+                    service.getOverallStatistics(id, fromDate, toDate)
+            );
+
+        } catch (DateTimeParseException e) {
+            return ResponseEntity.badRequest().body("Invalid date format");
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 }

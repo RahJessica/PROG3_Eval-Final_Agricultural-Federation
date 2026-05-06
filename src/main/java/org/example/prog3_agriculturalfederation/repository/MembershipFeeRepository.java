@@ -4,12 +4,10 @@ import org.example.prog3_agriculturalfederation.config.DatabaseConnection;
 import org.example.prog3_agriculturalfederation.dto.CollectivityTransactionDTO;
 import org.example.prog3_agriculturalfederation.entity.MembershipFee;
 import org.example.prog3_agriculturalfederation.entity.enums.Frequency;
+import org.example.prog3_agriculturalfederation.entity.enums.Status;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +62,7 @@ public class MembershipFeeRepository {
                 MembershipFee fee = new MembershipFee();
                 fee.setId(rs.getString("id_cotisation"));
                 fee.setAmount(rs.getDouble("montant"));
+                fee.setStatus(Status.valueOf(rs.getString("status")));
                 String freq = rs.getString("frequency");
                 if (freq != null) {
                     fee.setFrequency(Frequency.valueOf(freq));
@@ -88,8 +87,9 @@ public class MembershipFeeRepository {
             montant,
             frequency,
             eligible,
+            status,
             id_collectivite
-        ) VALUES (?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?)
     """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -101,6 +101,7 @@ public class MembershipFeeRepository {
                 ps.setObject(2, fee.getFrequency().name(), java.sql.Types.OTHER);
                 ps.setDate(3, Date.valueOf(fee.getEligibleFrom()));
                 ps.setInt(4, fee.getCollectivityId());
+                ps.setObject(5, fee.getStatus().name(), Types.OTHER);
 
                 ps.addBatch();
             }
