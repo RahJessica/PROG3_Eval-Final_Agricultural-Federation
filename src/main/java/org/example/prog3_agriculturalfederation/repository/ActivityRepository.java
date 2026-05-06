@@ -28,7 +28,7 @@ public class ActivityRepository {
 
                 ps.setString(1, a.getId());
                 ps.setString(2, a.getLabel());
-                ps.setString(3, a.getActivityType());
+                ps.setString(3, a.getActivityType().name());
                 ps.setInt(4, a.getCollectivityId());
 
                 if (a.getExecutiveDate() != null) {

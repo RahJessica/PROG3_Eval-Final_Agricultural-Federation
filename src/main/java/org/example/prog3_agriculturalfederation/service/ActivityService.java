@@ -2,6 +2,7 @@ package org.example.prog3_agriculturalfederation.service;
 
 import org.example.prog3_agriculturalfederation.dto.CreateCollectivityActivityDTO;
 import org.example.prog3_agriculturalfederation.entity.CollectivityActivity;
+import org.example.prog3_agriculturalfederation.entity.enums.ActivityType;
 import org.example.prog3_agriculturalfederation.repository.ActivityRepository;
 import org.example.prog3_agriculturalfederation.repository.CollectivityRepository;
 import org.springframework.stereotype.Service;
@@ -41,9 +42,8 @@ public class ActivityService {
 
             activity.setId(UUID.randomUUID().toString());
             activity.setLabel(dto.getLabel());
-            activity.setActivityType(dto.getActivityType());
+            activity.setActivityType(ActivityType.valueOf(dto.getActivityType()));
             activity.setCollectivityId(collectivityId);
-
             activity.setExecutiveDate(dto.getExecutiveDate());
             activity.setWeekOrdinal(dto.getWeekOrdinal());
             activity.setDayOfWeek(dto.getDayOfWeek());
