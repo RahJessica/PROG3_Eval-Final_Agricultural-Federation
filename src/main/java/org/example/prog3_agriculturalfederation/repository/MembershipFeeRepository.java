@@ -67,9 +67,10 @@ public class MembershipFeeRepository {
                 fee.setAmount(rs.getDouble("montant"));
                 fee.setStatus(Status.valueOf(rs.getString("status")));
                 String freq = rs.getString("frequency");
-                if (freq != null) {
-                    fee.setFrequency(Frequency.valueOf(freq));
+                if (freq == null) {
+                    throw new RuntimeException("Frequency is null for fee id " + rs.getString("id_cotisation"));
                 }
+                fee.setFrequency(Frequency.valueOf(freq));
                 if (rs.getDate("eligible") != null) {
                     fee.setEligibleFrom(rs.getDate("eligible").toLocalDate());
                 }
@@ -102,11 +103,13 @@ public class MembershipFeeRepository {
             for (MembershipFee fee : fees) {
 
                 ps.setDouble(1, fee.getAmount());
-                ps.setObject(2, fee.getFrequency().name(), java.sql.Types.OTHER);
+                if (fee.getFrequency() == null) {
+                    throw new RuntimeException("Frequency is null for fee before insert");
+                }
+                ps.setObject(2, fee.getFrequency().name(), Types.OTHER);
                 ps.setDate(3, Date.valueOf(fee.getEligibleFrom()));
-                ps.setInt(4, fee.getCollectivityId());
-                ps.setObject(5, fee.getStatus().name(), Types.OTHER);
-
+                ps.setObject(4, fee.getStatus().name(), Types.OTHER);
+                ps.setInt(5, fee.getCollectivityId());
                 ps.addBatch();
             }
 

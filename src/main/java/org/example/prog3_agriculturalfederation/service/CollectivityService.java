@@ -296,6 +296,10 @@ public class CollectivityService {
 
         for (MembershipFee fee : fees) {
 
+            if (fee.getFrequency() == null) {
+                continue;
+            }
+
             switch (fee.getFrequency()) {
 
                 case WEEKLY:

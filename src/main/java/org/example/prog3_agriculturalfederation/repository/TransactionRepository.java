@@ -18,8 +18,8 @@ public class TransactionRepository {
 
         String sql = """
             INSERT INTO collectivity_transaction
-                                        (amount, payment_mode, creation_date,
-                                         account_id, member_id, collectivity_id)
+                                        (montant, mode_paiement, date_creation,
+                                         id_account, id_membre, id_collectivite)
                                         VALUES (?, ?, ?, ?, ?, ?)
         """;
 
@@ -48,9 +48,9 @@ public class TransactionRepository {
 
         String sql = """
             SELECT * FROM collectivity_transaction
-            WHERE collectivity_id = ?
-            AND creation_date BETWEEN ? AND ?
-            ORDER BY creation_date
+            WHERE id_collectivite = ?
+            AND date_creation BETWEEN ? AND ?
+            ORDER BY date_creation
         """;
 
         try (Connection conn = DatabaseConnection.getConnection();
@@ -65,14 +65,14 @@ public class TransactionRepository {
             while (rs.next()) {
                 CollectivityTransaction tx = new CollectivityTransaction();
                 tx.setId(rs.getString("id_transaction"));
-                tx.setAmount(rs.getDouble("amount"));
+                tx.setAmount(rs.getDouble("montant"));
                 tx.setPaymentMode(
                         Enum.valueOf(org.example.prog3_agriculturalfederation.entity.enums.PaymentMode.class,
-                                rs.getString("payment_mode"))
+                                rs.getString("mode_paiement"))
                 );
-                tx.setCreationDate(rs.getDate("creation_date").toLocalDate());
-                tx.setCollectivityId(rs.getInt("collectivity_id"));
-                tx.setMemberId(rs.getString("member_id"));
+                tx.setCreationDate(rs.getDate("date_creation").toLocalDate());
+                tx.setCollectivityId(rs.getInt("id_collectivite"));
+                tx.setMemberId(rs.getString("id_membre"));
 
                 list.add(tx);
             }
