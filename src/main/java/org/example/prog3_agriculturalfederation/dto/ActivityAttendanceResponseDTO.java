@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 
 public class ActivityAttendanceResponseDTO {
     public Integer memberId;
-    public Integer collectivityId;
+    public String collectivityId;
     public AttendanceStatus status;
     public LocalDateTime markedAt;
 

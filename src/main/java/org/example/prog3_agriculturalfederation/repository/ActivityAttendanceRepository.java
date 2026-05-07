@@ -61,7 +61,7 @@ public class ActivityAttendanceRepository {
 
     public List<ActivityAttendance> findByActivityId(String activityId) {
         String sql = """
-                select * form activity_attendance where activity_id = ?""";
+                select * from activity_attendance where activity_id = ?""";
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, activityId);
@@ -72,9 +72,15 @@ public class ActivityAttendanceRepository {
                 ActivityAttendance a = new ActivityAttendance();
                 a.setId(rs.getString("id"));
                 a.setActivityId(rs.getString("activity_id"));
+                a.setMemberId(rs.getInt("member_id"));
                 a.setStatus(AttendanceStatus.valueOf(rs.getString("status")));
-                a.
+                a.setCreatAt(rs.getTimestamp("created_at").toLocalDateTime());
+
+                list.add(a);
             }
+            return list;
+        } catch(SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 }
