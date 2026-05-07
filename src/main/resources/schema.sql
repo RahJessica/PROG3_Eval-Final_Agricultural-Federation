@@ -219,3 +219,14 @@ CREATE TABLE collectivity_activity (
                                            FOREIGN KEY (collectivity_id)
                                                REFERENCES collectivite(id_collectivite)
 );
+
+create type attendance_status as enum ('PRESENT', 'ABSENT');
+CREATE TABLE activity_attendance (
+                                     id VARCHAR PRIMARY KEY,
+                                     activity_id VARCHAR NOT NULL,
+                                     member_id INT NOT NULL,
+                                     status attendance_status NOT NULL,
+                                     created_at TIMESTAMP DEFAULT now(),
+
+                                     UNIQUE(activity_id, member_id)
+);
