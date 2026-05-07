@@ -1,9 +1,12 @@
 package org.example.prog3_agriculturalfederation.repository;
 
 import org.example.prog3_agriculturalfederation.entity.ActivityAttendance;
+import org.example.prog3_agriculturalfederation.entity.enums.AttendanceStatus;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class ActivityAttendanceRepository {
@@ -53,6 +56,25 @@ public class ActivityAttendanceRepository {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public List<ActivityAttendance> findByActivityId(String activityId) {
+        String sql = """
+                select * form activity_attendance where activity_id = ?""";
+
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, activityId);
+            ResultSet rs = ps.executeQuery();
+
+            List<ActivityAttendance> list = new ArrayList<>();
+            while(rs.next()) {
+                ActivityAttendance a = new ActivityAttendance();
+                a.setId(rs.getString("id"));
+                a.setActivityId(rs.getString("activity_id"));
+                a.setStatus(AttendanceStatus.valueOf(rs.getString("status")));
+                a.
+            }
         }
     }
 }
