@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.Types;
 import java.util.List;
 
 @Repository
@@ -16,7 +17,7 @@ public class ActivityRepository {
 
         String sql = """
             INSERT INTO collectivity_activity
-            (id, label, activity_type, collectivity_id,
+            (id_activity, label, activity_type, collectivity_id,
              executive_date, week_ordinal, day_of_week)
             VALUES (?, ?, ?, ?, ?, ?, ?)
         """;
@@ -28,7 +29,7 @@ public class ActivityRepository {
 
                 ps.setString(1, a.getId());
                 ps.setString(2, a.getLabel());
-                ps.setString(3, a.getActivityType().name());
+                ps.setObject(3, a.getActivityType().name(), java.sql.Types.OTHER);
                 ps.setInt(4, a.getCollectivityId());
 
                 if (a.getExecutiveDate() != null) {

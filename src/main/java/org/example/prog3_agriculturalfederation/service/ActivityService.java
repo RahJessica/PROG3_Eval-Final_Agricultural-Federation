@@ -42,7 +42,7 @@ public class ActivityService {
 
             activity.setId(UUID.randomUUID().toString());
             activity.setLabel(dto.getLabel());
-            activity.setActivityType(ActivityType.valueOf(dto.getActivityType()));
+            activity.setActivityType(dto.getActivityType());
             activity.setCollectivityId(collectivityId);
             activity.setExecutiveDate(dto.getExecutiveDate());
             activity.setWeekOrdinal(dto.getWeekOrdinal());
