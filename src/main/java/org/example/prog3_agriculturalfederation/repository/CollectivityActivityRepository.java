@@ -30,7 +30,7 @@ public class CollectivityActivityRepository {
             while (rs.next()) {
                 CollectivityActivity activity = new CollectivityActivity();
 
-                activity.setId(rs.getString("id"));
+                activity.setId(rs.getString("collectivity_id"));
                 activity.setLabel(rs.getString("label"));
                 activity.setActivityType(
                         ActivityType.valueOf(rs.getString("activity_type"))
