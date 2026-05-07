@@ -198,3 +198,35 @@ INSERT INTO collectivity_transaction (
 
 (2, 15, 4, 40000,  'MOBILE', '2026-01-01'),
 (2, 16, 4, 60000,  'MOBILE', '2026-01-01');
+
+create type activity_type as enum ('MEETING', 'TRAINING', 'OTHER');
+CREATE TABLE collectivity_activity (
+                                       id_activity VARCHAR(100) PRIMARY KEY,
+
+                                       label VARCHAR(255) NOT NULL,
+
+                                       activity_type activity_type NOT NULL,
+
+                                       collectivity_id INTEGER NOT NULL,
+
+                                       executive_date DATE,
+
+                                       week_ordinal INTEGER,
+
+                                       day_of_week VARCHAR(20),
+
+                                       CONSTRAINT fk_collectivity_activity
+                                           FOREIGN KEY (collectivity_id)
+                                               REFERENCES collectivite(id_collectivite)
+);
+
+create type attendance_status as enum ('PRESENT', 'ABSENT');
+CREATE TABLE activity_attendance (
+                                     id VARCHAR PRIMARY KEY,
+                                     activity_id VARCHAR NOT NULL,
+                                     member_id INT NOT NULL,
+                                     status attendance_status NOT NULL,
+                                     created_at TIMESTAMP DEFAULT now(),
+
+                                     UNIQUE(activity_id, member_id)
+);

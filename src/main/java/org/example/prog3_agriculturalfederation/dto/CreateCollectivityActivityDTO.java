@@ -1,5 +1,6 @@
 package org.example.prog3_agriculturalfederation.dto;
 
+import org.example.prog3_agriculturalfederation.entity.enums.ActivityType;
 import org.example.prog3_agriculturalfederation.entity.enums.MemberOccupation;
 
 import java.time.LocalDate;
@@ -7,7 +8,7 @@ import java.util.List;
 
 public class CreateCollectivityActivityDTO {
     private String label;
-    private String activityType;
+    private ActivityType activityType;
 
     private List<MemberOccupation> memberOccupationConcerned;
 
@@ -24,11 +25,11 @@ public class CreateCollectivityActivityDTO {
         this.label = label;
     }
 
-    public String getActivityType() {
+    public ActivityType getActivityType() {
         return activityType;
     }
 
-    public void setActivityType(String activityType) {
+    public void setActivityType(ActivityType activityType) {
         this.activityType = activityType;
     }
 
